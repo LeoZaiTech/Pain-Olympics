@@ -1,0 +1,519 @@
+:root {
+  --paper: #f5eadc;
+  --paper-strong: #fff8ef;
+  --ink: #251316;
+  --ink-soft: #5d4747;
+  --border: rgba(37, 19, 22, 0.12);
+  --panel: rgba(255, 248, 239, 0.8);
+  --accent: #d3512b;
+  --accent-dark: #8e2d14;
+  --teal: #0f7874;
+  --gold: #c28b2c;
+  --danger: #882f42;
+  --shadow: 0 20px 45px rgba(72, 37, 28, 0.15);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(210, 81, 43, 0.2), transparent 28%),
+    radial-gradient(circle at top right, rgba(15, 120, 116, 0.16), transparent 22%),
+    linear-gradient(160deg, #efe1cf 0%, #f7efe5 48%, #ebddd0 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(37, 19, 22, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 19, 22, 0.02) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.page-shell {
+  width: min(1280px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.25rem 0 3rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(194, 139, 44, 0.35), transparent 68%);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.74rem;
+  color: var(--accent-dark);
+}
+
+h1,
+h2,
+.slot-label,
+.note-title {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  line-height: 0.94;
+}
+
+h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.hero-text,
+.hero-note p,
+.section-copy,
+.stage-label,
+.round-summary,
+.field span,
+.meta-line,
+.rule-line,
+.log-entry,
+.empty-slot {
+  color: var(--ink-soft);
+}
+
+.hero-text {
+  max-width: 40rem;
+  font-size: 1.05rem;
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.hero-pills span,
+.player-tag,
+.mini-pill {
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(37, 19, 22, 0.08);
+  font-size: 0.9rem;
+}
+
+.hero-note {
+  align-self: end;
+  padding: 1.2rem;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 247, 239, 0.88));
+  border: 1px solid rgba(37, 19, 22, 0.08);
+}
+
+.note-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.main-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.setup-panel,
+.hud-panel,
+#log-panel {
+  padding: 1.5rem;
+}
+
+.setup-form,
+.setup-grid,
+.match-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.setup-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.player-setup {
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(37, 19, 22, 0.08);
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  border: 1px solid rgba(37, 19, 22, 0.12);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  font: inherit;
+  color: var(--ink);
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.tag-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(37, 19, 22, 0.08);
+  cursor: pointer;
+}
+
+.tag-option input {
+  accent-color: var(--accent);
+}
+
+.setup-actions,
+.arena-actions,
+.dispute-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.1rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.primary-button,
+.secondary-button,
+.dispute-button,
+.ghost-button {
+  box-shadow: 0 10px 22px rgba(37, 19, 22, 0.12);
+}
+
+.primary-button {
+  background: linear-gradient(145deg, var(--accent), #e17231);
+  color: #fff8f1;
+}
+
+.secondary-button {
+  background: linear-gradient(145deg, var(--teal), #0e615d);
+  color: #effaf9;
+}
+
+.dispute-button {
+  background: linear-gradient(145deg, var(--danger), #652334);
+  color: #fff3f6;
+}
+
+.ghost-button {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--ink);
+}
+
+.scoreboard,
+.match-layout {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.scoreboard {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.score-card,
+.player-panel,
+.arena-panel {
+  padding: 1.25rem;
+}
+
+.score-card {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(37, 19, 22, 0.08);
+}
+
+.score-card strong,
+.player-name {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.score-value {
+  font-size: 2rem;
+  color: var(--accent-dark);
+}
+
+.match-layout {
+  display: grid;
+  align-items: start;
+}
+
+.player-panel {
+  min-height: 100%;
+  display: grid;
+  gap: 1rem;
+  background: linear-gradient(180deg, rgba(255, 248, 239, 0.9), rgba(255, 255, 255, 0.75));
+}
+
+.player-header,
+.player-tools,
+.hand-grid,
+.player-meta,
+.revealed-lane {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.player-header {
+  grid-template-columns: 1fr auto;
+  align-items: start;
+}
+
+.player-name {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+}
+
+.player-meta {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.meta-card {
+  padding: 0.8rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(37, 19, 22, 0.08);
+}
+
+.meta-value {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--accent-dark);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.hand-grid {
+  grid-template-columns: 1fr;
+}
+
+.hand-card,
+.played-card {
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(37, 19, 22, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 238, 227, 0.88));
+  text-align: left;
+}
+
+.hand-card {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.hand-card.is-selected {
+  border-color: rgba(211, 81, 43, 0.55);
+  box-shadow: 0 0 0 2px rgba(211, 81, 43, 0.18);
+  transform: translateY(-1px);
+}
+
+.hand-card.is-spent {
+  opacity: 0.5;
+}
+
+.card-title {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.card-points {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 3.3rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 120, 116, 0.1);
+  color: var(--teal);
+  font-weight: 800;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.player-tag {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
+}
+
+.arena-panel {
+  display: grid;
+  gap: 1rem;
+  background:
+    radial-gradient(circle at top, rgba(194, 139, 44, 0.2), transparent 30%),
+    linear-gradient(180deg, rgba(255, 247, 239, 0.95), rgba(248, 238, 227, 0.9));
+}
+
+.revealed-lane {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.played-card-slot {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.slot-label {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.played-card {
+  min-height: 176px;
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+}
+
+.empty-slot {
+  align-content: center;
+  justify-items: center;
+  background: rgba(255, 255, 255, 0.52);
+  border-style: dashed;
+}
+
+.round-summary {
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(37, 19, 22, 0.08);
+  min-height: 5rem;
+}
+
+.match-log {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.log-entry::marker {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 1080px) {
+  .hero,
+  .setup-grid,
+  .match-layout,
+  .scoreboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    width: min(100% - 1rem, 100%);
+    padding-top: 0.75rem;
+  }
+
+  .panel,
+  .setup-panel,
+  .hud-panel,
+  .score-card,
+  .player-panel,
+  .arena-panel,
+  #log-panel {
+    border-radius: 20px;
+  }
+
+  .hero,
+  .setup-panel,
+  .hud-panel,
+  .player-panel,
+  .arena-panel,
+  #log-panel {
+    padding: 1rem;
+  }
+
+  .tag-grid,
+  .player-meta,
+  .revealed-lane {
+    grid-template-columns: 1fr;
+  }
+}

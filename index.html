@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pain Olympics Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Playable Prototype</p>
+          <h1>Pain Olympics</h1>
+          <p class="hero-text">
+            A gallows-humor card battler about personalized decks, brutal
+            comparisons, and knowing exactly when to call bullshit.
+          </p>
+          <div class="hero-pills">
+            <span>War Mode</span>
+            <span>Visible Scores</span>
+            <span>5 Rounds</span>
+            <span>3 Challenge / 3 Bullshit</span>
+          </div>
+        </div>
+        <div class="hero-note">
+          <p class="note-title">Prototype assumptions</p>
+          <p>
+            This first build is a single-browser simulation of the MVP. Hands
+            are hidden by default, and ties after the follow-up card end in a
+            stalemate with no points awarded.
+          </p>
+        </div>
+      </header>
+
+      <main class="main-grid">
+        <section class="panel setup-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Setup</p>
+            <h2>Build the match</h2>
+          </div>
+          <p class="section-copy">
+            Pick a few tags for each player. The prototype builds a 10-card hand
+            around those themes.
+          </p>
+          <form id="setup-form" class="setup-form">
+            <div class="setup-grid">
+              <section class="player-setup">
+                <label class="field">
+                  <span>Player One</span>
+                  <input id="player-0-name" type="text" value="Player One" />
+                </label>
+                <div id="player-0-tags" class="tag-grid"></div>
+              </section>
+              <section class="player-setup">
+                <label class="field">
+                  <span>Player Two</span>
+                  <input id="player-1-name" type="text" value="Player Two" />
+                </label>
+                <div id="player-1-tags" class="tag-grid"></div>
+              </section>
+            </div>
+            <div class="setup-actions">
+              <button type="submit" class="primary-button">Generate Match</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="hud-panel" class="panel hud-panel hidden">
+          <div class="section-heading">
+            <p class="eyebrow">Match State</p>
+            <h2 id="round-label">Round 1 / 5</h2>
+          </div>
+          <p id="stage-label" class="stage-label">
+            Generate a match to begin.
+          </p>
+          <div id="scoreboard" class="scoreboard"></div>
+        </section>
+
+        <section id="match-area" class="match-layout hidden">
+          <section id="player-0-panel" class="panel player-panel"></section>
+
+          <section class="panel arena-panel">
+            <div class="section-heading">
+              <p class="eyebrow">Arena</p>
+              <h2>Resolve the clash</h2>
+            </div>
+
+            <div class="revealed-lane">
+              <article class="played-card-slot">
+                <p class="slot-label">Player One</p>
+                <div id="played-card-0" class="played-card empty-slot">
+                  No card locked in
+                </div>
+              </article>
+              <article class="played-card-slot">
+                <p class="slot-label">Player Two</p>
+                <div id="played-card-1" class="played-card empty-slot">
+                  No card locked in
+                </div>
+              </article>
+            </div>
+
+            <div class="arena-actions">
+              <button id="lock-in-btn" class="primary-button" disabled>
+                Lock In Primary Cards
+              </button>
+              <button id="resolve-btn" class="secondary-button" disabled>
+                Resolve Round
+              </button>
+              <button id="resolve-tiebreak-btn" class="secondary-button" disabled>
+                Resolve Tiebreak
+              </button>
+              <button id="next-round-btn" class="secondary-button" disabled>
+                Next Round
+              </button>
+              <button id="reset-btn" class="ghost-button" type="button">
+                Reset Match
+              </button>
+            </div>
+
+            <div class="dispute-actions">
+              <button
+                id="player-0-challenge-btn"
+                class="dispute-button"
+                disabled
+              >
+                Player One Challenge
+              </button>
+              <button
+                id="player-1-challenge-btn"
+                class="dispute-button"
+                disabled
+              >
+                Player Two Challenge
+              </button>
+              <button
+                id="player-0-bullshit-btn"
+                class="dispute-button"
+                disabled
+              >
+                Player One Bullshit
+              </button>
+              <button
+                id="player-1-bullshit-btn"
+                class="dispute-button"
+                disabled
+              >
+                Player Two Bullshit
+              </button>
+            </div>
+
+            <div id="round-summary" class="round-summary">
+              Generate a match to start playing.
+            </div>
+          </section>
+
+          <section id="player-1-panel" class="panel player-panel"></section>
+        </section>
+
+        <section id="log-panel" class="panel hidden">
+          <div class="section-heading">
+            <p class="eyebrow">Timeline</p>
+            <h2>Match log</h2>
+          </div>
+          <ol id="match-log" class="match-log"></ol>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
