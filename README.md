@@ -35,8 +35,11 @@ npm run dev
 
 Current prototype supports:
 
-- 2-player `War` mode simulation
-- tag-based hand generation
+- a main menu with `1 Player` and `2 Players`
+- preserved 2-player `War` mode setup
+- solo deck building by category or individual card selection
+- solo auto-fill up to a 40-card player deck
+- a computer rival with a 40-card random deck
 - visible point values
 - 3 `challenge` and 3 `bullshit` uses per player
 - follow-up-card tiebreak flow
@@ -45,6 +48,7 @@ Current prototype supports:
 Current prototype assumptions:
 
 - 5 rounds
-- 10-card starting hands
-- same-browser simulation
+- 10-card starting hands for the current 2-player setup
+- 40-card decks for solo mode
+- same-browser simulation with a shared UI
 - ties after the follow-up card become a stalemate

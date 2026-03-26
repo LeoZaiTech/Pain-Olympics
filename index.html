@@ -10,39 +10,160 @@
     <div class="page-shell">
       <header class="hero panel">
         <div class="hero-copy">
-          <p class="eyebrow">Playable Prototype</p>
+          <p class="eyebrow">Prototype Build</p>
           <h1>Pain Olympics</h1>
           <p class="hero-text">
-            A gallows-humor card battler about personalized decks, brutal
-            comparisons, and knowing exactly when to call bullshit.
+            Choose your mode, build your damage, and throw it into the arena.
+            This refactor keeps the original two-player setup while opening the
+            door to a real solo flow.
           </p>
           <div class="hero-pills">
-            <span>War Mode</span>
+            <span>Mode Menu</span>
+            <span>Solo Deck Builder</span>
+            <span>Two-Player War Mode</span>
             <span>Visible Scores</span>
-            <span>5 Rounds</span>
-            <span>3 Challenge / 3 Bullshit</span>
           </div>
         </div>
         <div class="hero-note">
-          <p class="note-title">Prototype assumptions</p>
+          <p class="note-title">Current build focus</p>
           <p>
-            This first build is a single-browser simulation of the MVP. Hands
-            are hidden by default, and ties after the follow-up card end in a
-            stalemate with no points awarded.
+            One-player mode lets you curate a deck by category or individual
+            cards, then face a computer rival with 40 random cards. Two-player
+            mode preserves the existing setup for side-by-side testing.
           </p>
         </div>
       </header>
 
       <main class="main-grid">
-        <section class="panel setup-panel">
+        <section id="menu-screen" class="panel screen">
           <div class="section-heading">
-            <p class="eyebrow">Setup</p>
-            <h2>Build the match</h2>
+            <p class="eyebrow">Mode Select</p>
+            <h2>Pick your pain format</h2>
           </div>
           <p class="section-copy">
-            Pick a few tags for each player. The prototype builds a 10-card hand
-            around those themes.
+            Start by choosing whether this match is solo or two-player.
           </p>
+
+          <div class="mode-grid">
+            <button id="open-solo-mode" class="mode-card" type="button">
+              <span class="mode-kicker">1 Player</span>
+              <strong>Build a 40-card deck</strong>
+              <span class="mode-copy">
+                Choose cards by category or one-by-one, then play against a
+                computer character with 40 random cards.
+              </span>
+            </button>
+
+            <button id="open-duo-mode" class="mode-card" type="button">
+              <span class="mode-kicker">2 Players</span>
+              <strong>Use the current setup flow</strong>
+              <span class="mode-copy">
+                Keep the original tag-based setup and play the existing
+                two-player war-mode prototype.
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <section id="solo-screen" class="panel screen hidden">
+          <div class="screen-topbar">
+            <button id="back-from-solo" class="ghost-button" type="button">
+              Back to Menu
+            </button>
+            <div>
+              <p class="eyebrow">Solo Setup</p>
+              <h2>Build your deck</h2>
+            </div>
+            <div id="solo-deck-counter" class="deck-counter">0 / 40 selected</div>
+          </div>
+
+          <div class="solo-layout">
+            <section class="panel-soft solo-controls">
+              <label class="field">
+                <span>Your name</span>
+                <input id="solo-name" type="text" value="Player One" />
+              </label>
+
+              <div class="control-cluster">
+                <p class="cluster-label">Choose by category</p>
+                <div id="solo-tag-grid" class="tag-grid"></div>
+                <div class="setup-actions">
+                  <button
+                    id="solo-add-categories"
+                    class="secondary-button"
+                    type="button"
+                  >
+                    Add Matching Cards
+                  </button>
+                  <button
+                    id="solo-remove-categories"
+                    class="ghost-button"
+                    type="button"
+                  >
+                    Remove Matching
+                  </button>
+                  <button id="solo-autofill" class="ghost-button" type="button">
+                    Auto Fill to 40
+                  </button>
+                  <button id="solo-clear" class="ghost-button" type="button">
+                    Clear Deck
+                  </button>
+                </div>
+              </div>
+
+              <label class="field">
+                <span>Search individual cards</span>
+                <input
+                  id="solo-search"
+                  type="text"
+                  placeholder="Search by title or tag"
+                />
+              </label>
+
+              <p id="solo-selection-summary" class="section-copy"></p>
+
+              <div class="setup-actions">
+                <button id="solo-start-btn" class="primary-button" type="button">
+                  Start Solo Match
+                </button>
+              </div>
+            </section>
+
+            <section class="panel-soft solo-library">
+              <div class="section-heading compact-heading">
+                <p class="eyebrow">Card Library</p>
+                <h3>Choose individual cards</h3>
+              </div>
+              <div id="solo-card-library" class="card-library"></div>
+            </section>
+
+            <aside class="panel-soft solo-selected">
+              <div class="section-heading compact-heading">
+                <p class="eyebrow">Selected Deck</p>
+                <h3>Your current 40</h3>
+              </div>
+              <div id="solo-selected-cards" class="selected-card-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="two-player-screen" class="panel screen hidden">
+          <div class="screen-topbar">
+            <button id="back-from-duo" class="ghost-button" type="button">
+              Back to Menu
+            </button>
+            <div>
+              <p class="eyebrow">Two-Player Setup</p>
+              <h2>Build the match</h2>
+            </div>
+            <div class="deck-counter">Current setup preserved</div>
+          </div>
+
+          <p class="section-copy">
+            Pick a few tags for each player. This setup keeps the original
+            two-player build intact.
+          </p>
+
           <form id="setup-form" class="setup-form">
             <div class="setup-grid">
               <section class="player-setup">
@@ -52,6 +173,7 @@
                 </label>
                 <div id="player-0-tags" class="tag-grid"></div>
               </section>
+
               <section class="player-setup">
                 <label class="field">
                   <span>Player Two</span>
@@ -60,8 +182,11 @@
                 <div id="player-1-tags" class="tag-grid"></div>
               </section>
             </div>
+
             <div class="setup-actions">
-              <button type="submit" class="primary-button">Generate Match</button>
+              <button type="submit" class="primary-button">
+                Generate Two-Player Match
+              </button>
             </div>
           </form>
         </section>
@@ -71,9 +196,8 @@
             <p class="eyebrow">Match State</p>
             <h2 id="round-label">Round 1 / 5</h2>
           </div>
-          <p id="stage-label" class="stage-label">
-            Generate a match to begin.
-          </p>
+          <p id="stage-label" class="stage-label">Choose a mode to begin.</p>
+          <p id="match-mode-label" class="mode-line"></p>
           <div id="scoreboard" class="scoreboard"></div>
         </section>
 
@@ -88,13 +212,13 @@
 
             <div class="revealed-lane">
               <article class="played-card-slot">
-                <p class="slot-label">Player One</p>
+                <p id="played-label-0" class="slot-label">Player One</p>
                 <div id="played-card-0" class="played-card empty-slot">
                   No card locked in
                 </div>
               </article>
               <article class="played-card-slot">
-                <p class="slot-label">Player Two</p>
+                <p id="played-label-1" class="slot-label">Player Two</p>
                 <div id="played-card-1" class="played-card empty-slot">
                   No card locked in
                 </div>
@@ -103,7 +227,7 @@
 
             <div class="arena-actions">
               <button id="lock-in-btn" class="primary-button" disabled>
-                Lock In Primary Cards
+                Lock In Cards
               </button>
               <button id="resolve-btn" class="secondary-button" disabled>
                 Resolve Round
@@ -115,7 +239,7 @@
                 Next Round
               </button>
               <button id="reset-btn" class="ghost-button" type="button">
-                Reset Match
+                Back to Menu
               </button>
             </div>
 
@@ -151,7 +275,7 @@
             </div>
 
             <div id="round-summary" class="round-summary">
-              Generate a match to start playing.
+              Choose a mode to start playing.
             </div>
           </section>
 

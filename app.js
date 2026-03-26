@@ -10,18 +10,8 @@ const TAGS = [
 ];
 
 const CARD_POOL = [
-  {
-    id: "dead-father",
-    title: "Dead Father",
-    points: 9,
-    tags: ["family"],
-  },
-  {
-    id: "abusive-stepfather",
-    title: "Abusive Stepfather",
-    points: 8,
-    tags: ["family"],
-  },
+  { id: "dead-father", title: "Dead Father", points: 9, tags: ["family"] },
+  { id: "abusive-stepfather", title: "Abusive Stepfather", points: 8, tags: ["family"] },
   {
     id: "mentally-ill-parents",
     title: "Mentally Ill Parents",
@@ -52,12 +42,7 @@ const CARD_POOL = [
     points: 6,
     tags: ["family", "health"],
   },
-  {
-    id: "autistic",
-    title: "Autistic",
-    points: 6,
-    tags: ["identity", "health"],
-  },
+  { id: "autistic", title: "Autistic", points: 6, tags: ["identity", "health"] },
   {
     id: "adhd-faking",
     title: "Diagnosed ADHD but Still Think You're Faking It",
@@ -196,12 +181,7 @@ const CARD_POOL = [
     points: 6,
     tags: ["internet", "identity"],
   },
-  {
-    id: "self-aware",
-    title: "At Least I'm Self-Aware",
-    points: 4,
-    tags: ["health"],
-  },
+  { id: "self-aware", title: "At Least I'm Self-Aware", points: 4, tags: ["health"] },
   {
     id: "radicalized-fanfiction",
     title: "Radicalized by Fanfiction",
@@ -244,34 +224,121 @@ const CARD_POOL = [
     points: 5,
     tags: ["collapse", "internet"],
   },
+  {
+    id: "post-election-dread",
+    title: "Post-Election Dread",
+    points: 7,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "apocalyptic-dreams",
+    title: "Apocalyptic Dreams",
+    points: 6,
+    tags: ["collapse", "health"],
+  },
+  {
+    id: "city-never-masked",
+    title: "Lived in a City That Never Wore Masks During COVID",
+    points: 7,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "dont-air-business",
+    title: "Family Had a Don't Air Our Business Rule",
+    points: 7,
+    tags: ["family", "culture"],
+  },
+  {
+    id: "explain-to-therapist",
+    title: "Had to Explain Everything to the Therapist",
+    points: 6,
+    tags: ["health", "culture"],
+  },
+  {
+    id: "interesting-pta",
+    title: "Interesting at PTA Meetings",
+    points: 5,
+    tags: ["family", "culture"],
+  },
+  {
+    id: "comfort-forensics",
+    title: "Comfort TV Is Forensic Documentaries",
+    points: 4,
+    tags: ["culture", "health"],
+  },
+  {
+    id: "memes-regulation",
+    title: "Memes as Emotional Regulation",
+    points: 5,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "health-advice-tumblr",
+    title: "Got Health Advice from Tumblr and Never Recovered",
+    points: 6,
+    tags: ["internet", "health"],
+  },
 ];
 
 const SETTINGS = {
   maxRounds: 5,
-  handSize: 10,
+  duoHandSize: 10,
+  soloDeckSize: 40,
   challengeUses: 3,
   bullshitUses: 3,
+  computerNames: [
+    "Mall Karen",
+    "Walmart Karen",
+    "Officer Brady",
+    "Sheriff Wright",
+    "AI Support Unit",
+    "The Doomscroll Oracle",
+  ],
 };
 
 const elements = {
+  menuScreen: document.querySelector("#menu-screen"),
+  soloScreen: document.querySelector("#solo-screen"),
+  duoScreen: document.querySelector("#two-player-screen"),
+  openSoloModeBtn: document.querySelector("#open-solo-mode"),
+  openDuoModeBtn: document.querySelector("#open-duo-mode"),
+  backFromSoloBtn: document.querySelector("#back-from-solo"),
+  backFromDuoBtn: document.querySelector("#back-from-duo"),
   setupForm: document.querySelector("#setup-form"),
   playerNameInputs: [
     document.querySelector("#player-0-name"),
     document.querySelector("#player-1-name"),
   ],
-  tagContainers: [
+  duoTagContainers: [
     document.querySelector("#player-0-tags"),
     document.querySelector("#player-1-tags"),
   ],
+  soloNameInput: document.querySelector("#solo-name"),
+  soloTagGrid: document.querySelector("#solo-tag-grid"),
+  soloSearch: document.querySelector("#solo-search"),
+  soloCardLibrary: document.querySelector("#solo-card-library"),
+  soloSelectedCards: document.querySelector("#solo-selected-cards"),
+  soloDeckCounter: document.querySelector("#solo-deck-counter"),
+  soloSelectionSummary: document.querySelector("#solo-selection-summary"),
+  soloStartBtn: document.querySelector("#solo-start-btn"),
+  soloAddCategoriesBtn: document.querySelector("#solo-add-categories"),
+  soloRemoveCategoriesBtn: document.querySelector("#solo-remove-categories"),
+  soloAutofillBtn: document.querySelector("#solo-autofill"),
+  soloClearBtn: document.querySelector("#solo-clear"),
   hudPanel: document.querySelector("#hud-panel"),
   matchArea: document.querySelector("#match-area"),
   logPanel: document.querySelector("#log-panel"),
   roundLabel: document.querySelector("#round-label"),
   stageLabel: document.querySelector("#stage-label"),
+  matchModeLabel: document.querySelector("#match-mode-label"),
   scoreboard: document.querySelector("#scoreboard"),
   playerPanels: [
     document.querySelector("#player-0-panel"),
     document.querySelector("#player-1-panel"),
+  ],
+  playedLabels: [
+    document.querySelector("#played-label-0"),
+    document.querySelector("#played-label-1"),
   ],
   playedCardSlots: [
     document.querySelector("#played-card-0"),
@@ -295,12 +362,17 @@ const elements = {
 };
 
 const state = {
+  screen: "menu",
+  mode: null,
   round: 1,
   maxRounds: SETTINGS.maxRounds,
-  phase: "setup",
+  phase: "menu",
   players: [],
   roundState: createFreshRoundState(),
   log: [],
+  soloBuilder: {
+    selectedCardIds: new Set(),
+  },
 };
 
 function createFreshRoundState() {
@@ -334,14 +406,14 @@ function cardById(cardId) {
   return CARD_POOL.find((card) => card.id === cardId) ?? null;
 }
 
-function selectedTagsForPlayer(playerIndex) {
-  return Array.from(
-    elements.tagContainers[playerIndex].querySelectorAll("input:checked"),
-  ).map((input) => input.value);
+function selectedTagsFromContainer(container) {
+  return Array.from(container.querySelectorAll("input:checked")).map(
+    (input) => input.value,
+  );
 }
 
 function buildTagInputs() {
-  elements.tagContainers.forEach((container, playerIndex) => {
+  elements.duoTagContainers.forEach((container, playerIndex) => {
     container.innerHTML = TAGS.map((tag) => {
       const isChecked =
         (playerIndex === 0 && ["family", "health", "internet"].includes(tag.id)) ||
@@ -355,96 +427,246 @@ function buildTagInputs() {
       `;
     }).join("");
   });
+
+  elements.soloTagGrid.innerHTML = TAGS.map(
+    (tag) => `
+      <label class="tag-option">
+        <input type="checkbox" value="${tag.id}" />
+        <span>${tag.label}</span>
+      </label>
+    `,
+  ).join("");
 }
 
-function buildHand(selectedTags) {
+function buildRandomDeck(size, excludedIds = []) {
+  const excludedSet = new Set(excludedIds);
+  const availableCards = CARD_POOL.filter((card) => !excludedSet.has(card.id));
+  return shuffle(availableCards).slice(0, size);
+}
+
+function buildHandFromTags(selectedTags, size) {
+  if (!selectedTags.length) {
+    return buildRandomDeck(size);
+  }
+
   const matchingCards = CARD_POOL.filter((card) =>
     selectedTags.some((tag) => card.tags.includes(tag)),
   );
   const fallbackCards = CARD_POOL.filter(
     (card) => !matchingCards.some((match) => match.id === card.id),
   );
-  const combinedPool = shuffle([...matchingCards, ...fallbackCards]);
 
-  return combinedPool.slice(0, SETTINGS.handSize);
+  return shuffle([...matchingCards, ...fallbackCards]).slice(0, size);
 }
 
-function createPlayer(playerIndex) {
-  const name = elements.playerNameInputs[playerIndex].value.trim() || `Player ${playerIndex + 1}`;
-  const tags = selectedTagsForPlayer(playerIndex);
+function selectedSoloTags() {
+  return selectedTagsFromContainer(elements.soloTagGrid);
+}
 
+function toggleSoloCardSelection(cardId) {
+  const selectedIds = state.soloBuilder.selectedCardIds;
+
+  if (selectedIds.has(cardId)) {
+    selectedIds.delete(cardId);
+  } else if (selectedIds.size < SETTINGS.soloDeckSize) {
+    selectedIds.add(cardId);
+  }
+
+  render();
+}
+
+function addSoloCardsByTags() {
+  const selectedIds = state.soloBuilder.selectedCardIds;
+  const tags = selectedSoloTags();
+
+  if (!tags.length) {
+    return;
+  }
+
+  CARD_POOL.filter((card) => tags.some((tag) => card.tags.includes(tag))).forEach((card) => {
+    if (selectedIds.size < SETTINGS.soloDeckSize) {
+      selectedIds.add(card.id);
+    }
+  });
+
+  render();
+}
+
+function removeSoloCardsByTags() {
+  const tags = selectedSoloTags();
+
+  if (!tags.length) {
+    return;
+  }
+
+  Array.from(state.soloBuilder.selectedCardIds).forEach((cardId) => {
+    const card = cardById(cardId);
+    if (card && tags.some((tag) => card.tags.includes(tag))) {
+      state.soloBuilder.selectedCardIds.delete(cardId);
+    }
+  });
+
+  render();
+}
+
+function autoFillSoloDeck() {
+  const selectedIds = Array.from(state.soloBuilder.selectedCardIds);
+  const cardsToAdd = buildRandomDeck(
+    SETTINGS.soloDeckSize - selectedIds.length,
+    selectedIds,
+  );
+
+  cardsToAdd.forEach((card) => {
+    state.soloBuilder.selectedCardIds.add(card.id);
+  });
+
+  render();
+}
+
+function clearSoloDeck() {
+  state.soloBuilder.selectedCardIds.clear();
+  render();
+}
+
+function createPlayer({
+  name,
+  tags = [],
+  hand = [],
+  isComputer = false,
+  handVisible = false,
+}) {
   return {
     name,
     tags,
     score: 0,
-    hand: buildHand(tags),
+    hand,
+    isComputer,
+    handVisible,
     selectedCardId: null,
     followUpCardId: null,
     challengesLeft: SETTINGS.challengeUses,
     bullshitLeft: SETTINGS.bullshitUses,
-    handVisible: false,
   };
 }
 
-function buildMatch(event) {
-  event.preventDefault();
+function createDuoPlayer(playerIndex) {
+  const name = elements.playerNameInputs[playerIndex].value.trim() || `Player ${playerIndex + 1}`;
+  const tags = selectedTagsFromContainer(elements.duoTagContainers[playerIndex]);
 
+  return createPlayer({
+    name,
+    tags,
+    hand: buildHandFromTags(tags, SETTINGS.duoHandSize),
+    handVisible: false,
+  });
+}
+
+function createSoloHumanPlayer() {
+  const selectedIds = Array.from(state.soloBuilder.selectedCardIds);
+  const selectedCards = selectedIds.map(cardById).filter(Boolean);
+  const cardsToAdd = buildRandomDeck(
+    Math.max(SETTINGS.soloDeckSize - selectedCards.length, 0),
+    selectedIds,
+  );
+
+  return createPlayer({
+    name: elements.soloNameInput.value.trim() || "Player One",
+    tags: selectedSoloTags(),
+    hand: [...selectedCards, ...cardsToAdd],
+    handVisible: true,
+  });
+}
+
+function createComputerPlayer() {
+  return createPlayer({
+    name: shuffle(SETTINGS.computerNames)[0],
+    tags: ["random-computer-deck"],
+    hand: buildRandomDeck(SETTINGS.soloDeckSize),
+    isComputer: true,
+    handVisible: false,
+  });
+}
+
+function startMatch(mode, players) {
+  state.screen = "match";
+  state.mode = mode;
   state.round = 1;
   state.maxRounds = SETTINGS.maxRounds;
   state.phase = "selecting";
-  state.players = [createPlayer(0), createPlayer(1)];
+  state.players = players;
   state.roundState = createFreshRoundState();
   state.log = [];
 
-  elements.hudPanel.classList.remove("hidden");
-  elements.matchArea.classList.remove("hidden");
-  elements.logPanel.classList.remove("hidden");
+  addLogEntry(
+    mode === "solo"
+      ? `${players[0].name} enters the arena against ${players[1].name}.`
+      : "Two-player match generated. Both players can reveal their own hands and choose a primary card.",
+  );
 
-  addLogEntry("Match generated. Both players can reveal their own hands and choose a primary card.");
   render();
 }
 
+function buildDuoMatch(event) {
+  event.preventDefault();
+  startMatch("duo", [createDuoPlayer(0), createDuoPlayer(1)]);
+}
+
+function buildSoloMatch() {
+  if (!state.soloBuilder.selectedCardIds.size) {
+    return;
+  }
+
+  startMatch("solo", [createSoloHumanPlayer(), createComputerPlayer()]);
+}
+
+function chooseComputerCard(cardType) {
+  const computer = state.players[1];
+
+  if (!computer?.isComputer) {
+    return;
+  }
+
+  const excludedIds =
+    cardType === "followup" ? [computer.selectedCardId].filter(Boolean) : [];
+  const card = shuffle(
+    computer.hand.filter((handCard) => !excludedIds.includes(handCard.id)),
+  )[0];
+
+  if (!card) {
+    return;
+  }
+
+  if (cardType === "primary") {
+    computer.selectedCardId = card.id;
+  } else {
+    computer.followUpCardId = card.id;
+  }
+}
+
 function handleCardClick(playerIndex, cardId) {
+  const player = state.players[playerIndex];
+
+  if (!player || player.isComputer) {
+    return;
+  }
+
   if (state.phase === "selecting") {
-    state.players[playerIndex].selectedCardId = cardId;
+    player.selectedCardId = cardId;
   } else if (state.phase === "tiebreak-selecting") {
-    state.players[playerIndex].followUpCardId = cardId;
+    player.followUpCardId = cardId;
   }
 
   render();
 }
 
 function toggleHandVisibility(playerIndex) {
-  state.players[playerIndex].handVisible = !state.players[playerIndex].handVisible;
-  render();
-}
+  const player = state.players[playerIndex];
 
-function lockInPrimaryCards() {
-  if (!state.players.every((player) => player.selectedCardId)) {
+  if (!player || player.isComputer || state.mode !== "duo") {
     return;
   }
 
-  state.roundState.primarySelections = state.players.map((player) =>
-    cardById(player.selectedCardId),
-  );
-  state.roundState.defaultWinnerIndex = compareCards(
-    state.roundState.primarySelections[0],
-    state.roundState.primarySelections[1],
-  );
-  state.phase = "revealed";
-
-  const defaultWinner = state.roundState.defaultWinnerIndex;
-
-  if (defaultWinner === null) {
-    elements.roundSummary.textContent =
-      "Primary cards are tied on visible value. Resolve the tiebreak to continue.";
-    addLogEntry("Primary cards tied. Follow-up cards are now required.");
-  } else {
-    addLogEntry(
-      `${state.players[defaultWinner].name} leads the round by default. Resolve the clash or spend a dispute token.`,
-    );
-  }
-
+  player.handVisible = !player.handVisible;
   render();
 }
 
@@ -460,37 +682,85 @@ function compareCards(firstCard, secondCard) {
   return firstCard.points > secondCard.points ? 0 : 1;
 }
 
+function lockInPrimaryCards() {
+  if (state.mode === "solo") {
+    if (!state.players[0]?.selectedCardId) {
+      return;
+    }
+
+    chooseComputerCard("primary");
+    addLogEntry(`${state.players[1].name} locks in a face-down card.`);
+  } else if (!state.players.every((player) => player.selectedCardId)) {
+    return;
+  }
+
+  state.roundState.primarySelections = state.players.map((player) =>
+    cardById(player.selectedCardId),
+  );
+  state.roundState.defaultWinnerIndex = compareCards(
+    state.roundState.primarySelections[0],
+    state.roundState.primarySelections[1],
+  );
+  state.phase = "revealed";
+
+  if (state.roundState.defaultWinnerIndex === null) {
+    addLogEntry("Primary cards tied. Follow-up cards are now required.");
+  } else {
+    addLogEntry(
+      `${state.players[state.roundState.defaultWinnerIndex].name} leads the round by default.`,
+    );
+  }
+
+  render();
+}
+
+function enterTiebreak(message) {
+  state.phase = "tiebreak-selecting";
+  state.players.forEach((player) => {
+    player.followUpCardId = null;
+  });
+
+  if (message) {
+    addLogEntry(message);
+  }
+
+  if (state.mode === "solo") {
+    chooseComputerCard("followup");
+    addLogEntry(`${state.players[1].name} throws in a follow-up card.`);
+  }
+
+  render();
+}
+
 function beginDispute(disputeType, playerIndex) {
   if (state.phase !== "revealed") {
     return;
   }
 
-  if (disputeType === "challenge" && state.players[playerIndex].challengesLeft <= 0) {
+  const player = state.players[playerIndex];
+
+  if (!player || player.isComputer) {
     return;
   }
 
-  if (disputeType === "bullshit" && state.players[playerIndex].bullshitLeft <= 0) {
+  if (disputeType === "challenge" && player.challengesLeft <= 0) {
+    return;
+  }
+
+  if (disputeType === "bullshit" && player.bullshitLeft <= 0) {
     return;
   }
 
   if (disputeType === "challenge") {
-    state.players[playerIndex].challengesLeft -= 1;
+    player.challengesLeft -= 1;
   } else {
-    state.players[playerIndex].bullshitLeft -= 1;
+    player.bullshitLeft -= 1;
   }
 
-  state.phase = "tiebreak-selecting";
   state.roundState.disputeType = disputeType;
   state.roundState.disputeBy = playerIndex;
-  state.players.forEach((player) => {
-    player.followUpCardId = null;
-  });
 
-  addLogEntry(
-    `${state.players[playerIndex].name} spent a ${disputeType} token. Both players must commit a follow-up card.`,
-  );
-
-  render();
+  enterTiebreak(`${player.name} spent a ${disputeType} token.`);
 }
 
 function resolveRound() {
@@ -499,9 +769,7 @@ function resolveRound() {
   }
 
   if (state.roundState.defaultWinnerIndex === null) {
-    state.phase = "tiebreak-selecting";
-    addLogEntry("No default winner. Proceeding to follow-up cards.");
-    render();
+    enterTiebreak("No default winner. Proceeding to follow-up cards.");
     return;
   }
 
@@ -509,10 +777,13 @@ function resolveRound() {
 }
 
 function resolveTiebreak() {
-  if (
-    state.phase !== "tiebreak-selecting" ||
-    !state.players.every((player) => player.followUpCardId)
-  ) {
+  const needsHumanCard = Boolean(state.players[0]?.followUpCardId);
+  const needsSecondCard =
+    state.mode === "duo"
+      ? Boolean(state.players[1]?.followUpCardId)
+      : Boolean(state.players[1]?.followUpCardId);
+
+  if (state.phase !== "tiebreak-selecting" || !needsHumanCard || !needsSecondCard) {
     return;
   }
 
@@ -588,9 +859,8 @@ function buildMatchOverMessage() {
   }
 
   const winner = firstPlayer.score > secondPlayer.score ? firstPlayer : secondPlayer;
-  return `Match over. ${winner.name} wins ${winner.score} to ${
-    winner === firstPlayer ? secondPlayer.score : firstPlayer.score
-  }.`;
+  const loser = winner === firstPlayer ? secondPlayer : firstPlayer;
+  return `Match over. ${winner.name} wins ${winner.score} to ${loser.score}.`;
 }
 
 function advanceRound() {
@@ -605,21 +875,19 @@ function advanceRound() {
   render();
 }
 
-function resetMatch() {
+function clearMatchState() {
+  state.mode = null;
   state.round = 1;
-  state.phase = "setup";
+  state.maxRounds = SETTINGS.maxRounds;
+  state.phase = "menu";
   state.players = [];
   state.roundState = createFreshRoundState();
   state.log = [];
+}
 
-  elements.hudPanel.classList.add("hidden");
-  elements.matchArea.classList.add("hidden");
-  elements.logPanel.classList.add("hidden");
-  elements.roundSummary.textContent = "Generate a match to start playing.";
-  elements.playedCardSlots.forEach((slot) => {
-    slot.className = "played-card empty-slot";
-    slot.textContent = "No card locked in";
-  });
+function resetMatchToMenu() {
+  clearMatchState();
+  state.screen = "menu";
   render();
 }
 
@@ -642,6 +910,97 @@ function buildCardMarkup(card) {
   `;
 }
 
+function renderSoloBuilder() {
+  const searchTerm = elements.soloSearch.value.trim().toLowerCase();
+  const selectedIds = state.soloBuilder.selectedCardIds;
+  const selectedCards = CARD_POOL.filter((card) => selectedIds.has(card.id));
+  const filteredCards = CARD_POOL.filter((card) => {
+    if (!searchTerm) {
+      return true;
+    }
+
+    const haystack = `${card.title} ${card.tags.join(" ")}`.toLowerCase();
+    return haystack.includes(searchTerm);
+  });
+
+  elements.soloDeckCounter.textContent = `${selectedIds.size} / ${SETTINGS.soloDeckSize} selected`;
+  elements.soloSelectionSummary.textContent =
+    selectedIds.size === 0
+      ? "Pick individual cards, bulk-add them by category, or mix both approaches."
+      : selectedIds.size < SETTINGS.soloDeckSize
+        ? `You have ${selectedIds.size} cards selected. Starting a match will auto-fill the remaining ${
+            SETTINGS.soloDeckSize - selectedIds.size
+          } slots with random cards.`
+        : "Your 40-card solo deck is full and ready to go.";
+  elements.soloStartBtn.disabled = selectedIds.size === 0;
+
+  elements.soloCardLibrary.innerHTML = filteredCards.length
+    ? filteredCards
+        .map((card) => {
+          const isSelected = selectedIds.has(card.id);
+          const isDisabled = !isSelected && selectedIds.size >= SETTINGS.soloDeckSize;
+
+          return `
+            <button
+              class="library-card ${isSelected ? "is-selected" : ""}"
+              type="button"
+              data-card-id="${card.id}"
+              ${isDisabled ? "disabled" : ""}
+            >
+              ${buildCardMarkup(card)}
+              <div class="selection-note">${isSelected ? "Selected" : "Click to add"}</div>
+            </button>
+          `;
+        })
+        .join("")
+    : `<div class="meta-card"><span class="meta-line">No cards match that search.</span></div>`;
+
+  elements.soloCardLibrary.querySelectorAll(".library-card").forEach((button) => {
+    button.addEventListener("click", () => toggleSoloCardSelection(button.dataset.cardId));
+  });
+
+  const orderedSelectedCards = [...selectedCards].sort((firstCard, secondCard) => {
+    if (secondCard.points !== firstCard.points) {
+      return secondCard.points - firstCard.points;
+    }
+
+    return firstCard.title.localeCompare(secondCard.title);
+  });
+
+  elements.soloSelectedCards.innerHTML = orderedSelectedCards.length
+    ? orderedSelectedCards
+        .map(
+          (card) => `
+            <button
+              class="selected-card-item"
+              type="button"
+              data-remove-card-id="${card.id}"
+            >
+              <div class="selection-line">
+                <strong>${card.title}</strong>
+                <span class="card-points">${card.points} pts</span>
+              </div>
+              <div class="card-tags">
+                ${card.tags
+                  .map((tag) => `<span class="player-tag">${tagLabel(tag)}</span>`)
+                  .join("")}
+              </div>
+              <div class="selection-note">Click to remove</div>
+            </button>
+          `,
+        )
+        .join("")
+    : `<div class="meta-card"><span class="meta-line">No cards selected yet.</span></div>`;
+
+  elements.soloSelectedCards
+    .querySelectorAll("[data-remove-card-id]")
+    .forEach((button) => {
+      button.addEventListener("click", () =>
+        toggleSoloCardSelection(button.dataset.removeCardId),
+      );
+    });
+}
+
 function renderPlayerPanel(playerIndex) {
   const player = state.players[playerIndex];
 
@@ -656,11 +1015,17 @@ function renderPlayerPanel(playerIndex) {
     ? player.selectedCardId
     : player.followUpCardId;
   const primaryCardId = player.selectedCardId;
+  const isComputer = player.isComputer;
+  const handVisible = state.mode === "solo" ? !isComputer : player.handVisible;
+  const handNote = isComputer
+    ? "Computer deck stays hidden in this prototype."
+    : "Hand hidden. Reveal only when it is your turn to choose.";
 
-  const handMarkup = player.handVisible
+  const handMarkup = handVisible
     ? player.hand
         .map((card) => {
           const isDisabled =
+            isComputer ||
             (!isSelectingPrimary && !isSelectingFollowUp) ||
             (isSelectingFollowUp && card.id === primaryCardId);
           const isSelected = currentSelectionId === card.id;
@@ -678,17 +1043,29 @@ function renderPlayerPanel(playerIndex) {
           `;
         })
         .join("")
-    : `<div class="meta-line">Hand hidden. Reveal only when it is your turn to choose.</div>`;
+    : `<div class="meta-line">${handNote}</div>`;
 
   elements.playerPanels[playerIndex].innerHTML = `
     <div class="player-header">
       <div>
         <p class="player-name">${player.name}</p>
-        <p class="meta-line">Tags: ${player.tags.map(tagLabel).join(", ") || "Open pool"}</p>
+        <p class="meta-line">${
+          isComputer
+            ? "40-card random computer deck"
+            : `Tags: ${player.tags.map(tagLabel).join(", ") || "Open pool"}`
+        }</p>
       </div>
-      <button class="ghost-button toggle-hand-button" type="button" data-player-index="${playerIndex}">
-        ${player.handVisible ? "Hide Hand" : "Reveal Hand"}
-      </button>
+      ${
+        state.mode === "duo" && !isComputer
+          ? `
+            <button class="ghost-button toggle-hand-button" type="button" data-player-index="${playerIndex}">
+              ${player.handVisible ? "Hide Hand" : "Reveal Hand"}
+            </button>
+          `
+          : `<div class="mini-pill">${
+              isComputer ? "Concealed hand" : "Solo hand visible"
+            }</div>`
+      }
     </div>
 
     <div class="player-meta">
@@ -726,20 +1103,16 @@ function renderPlayerPanel(playerIndex) {
     <div class="hand-grid">${handMarkup}</div>
   `;
 
-  elements.playerPanels[playerIndex]
-    .querySelector(".toggle-hand-button")
-    .addEventListener("click", () => toggleHandVisibility(playerIndex));
+  const toggleButton = elements.playerPanels[playerIndex].querySelector(".toggle-hand-button");
+  if (toggleButton) {
+    toggleButton.addEventListener("click", () => toggleHandVisibility(playerIndex));
+  }
 
-  elements.playerPanels[playerIndex]
-    .querySelectorAll(".hand-card")
-    .forEach((button) => {
-      button.addEventListener("click", () => {
-        handleCardClick(
-          Number(button.dataset.playerIndex),
-          button.dataset.cardId,
-        );
-      });
-    });
+  elements.playerPanels[playerIndex].querySelectorAll(".hand-card").forEach((button) => {
+    button.addEventListener("click", () =>
+      handleCardClick(Number(button.dataset.playerIndex), button.dataset.cardId),
+    );
+  });
 }
 
 function renderPlayedCards() {
@@ -747,6 +1120,9 @@ function renderPlayedCards() {
     const primaryCard = state.roundState.primarySelections[playerIndex];
     const followUpCard = state.roundState.followUpSelections[playerIndex];
     const slot = elements.playedCardSlots[playerIndex];
+
+    elements.playedLabels[playerIndex].textContent =
+      state.players[playerIndex]?.name ?? `Player ${playerIndex + 1}`;
 
     if (!primaryCard) {
       slot.className = "played-card empty-slot";
@@ -791,16 +1167,15 @@ function renderScoreboard() {
 
 function renderRoundSummary() {
   if (!state.players.length) {
-    elements.roundSummary.textContent = "Generate a match to start playing.";
+    elements.roundSummary.textContent = "Choose a mode to start playing.";
     return;
   }
 
-  const firstPrimary = state.roundState.primarySelections[0];
-  const secondPrimary = state.roundState.primarySelections[1];
-
   if (state.phase === "selecting") {
     elements.roundSummary.textContent =
-      "Both players choose a primary card. Lock them in once both selections are ready.";
+      state.mode === "solo"
+        ? "Choose your primary card. The computer will lock in a random card when you confirm."
+        : "Both players choose a primary card. Lock them in once both selections are ready.";
     return;
   }
 
@@ -812,17 +1187,20 @@ function renderRoundSummary() {
     }
 
     const leader = state.players[state.roundState.defaultWinnerIndex];
-    elements.roundSummary.textContent = `${leader.name} is ahead by default with ${
-      state.roundState.primarySelections[state.roundState.defaultWinnerIndex].points
-    } points against ${
-      state.roundState.primarySelections[state.roundState.defaultWinnerIndex === 0 ? 1 : 0].points
-    }. Accept the result or spend a dispute token.`;
+    const trailingIndex = state.roundState.defaultWinnerIndex === 0 ? 1 : 0;
+    const leaderPoints =
+      state.roundState.primarySelections[state.roundState.defaultWinnerIndex].points;
+    const trailingPoints = state.roundState.primarySelections[trailingIndex].points;
+
+    elements.roundSummary.textContent = `${leader.name} is ahead by default with ${leaderPoints} points against ${trailingPoints}. Accept the result or spend a dispute token.`;
     return;
   }
 
   if (state.phase === "tiebreak-selecting") {
     elements.roundSummary.textContent =
-      "Each player must choose one follow-up card. The combined total decides the clash.";
+      state.mode === "solo"
+        ? "Choose your follow-up card. The computer has already thrown one into the pile."
+        : "Each player must choose one follow-up card. The combined total decides the clash.";
     return;
   }
 
@@ -833,35 +1211,77 @@ function renderRoundSummary() {
       return;
     }
 
-    const winner = state.players[state.roundState.winnerIndex];
     const firstTotal =
-      firstPrimary.points + (state.roundState.followUpSelections[0]?.points ?? 0);
+      state.roundState.primarySelections[0].points +
+      (state.roundState.followUpSelections[0]?.points ?? 0);
     const secondTotal =
-      secondPrimary.points + (state.roundState.followUpSelections[1]?.points ?? 0);
+      state.roundState.primarySelections[1].points +
+      (state.roundState.followUpSelections[1]?.points ?? 0);
 
-    elements.roundSummary.textContent = `${winner.name} wins the clash ${firstTotal} to ${secondTotal} and captures ${state.roundState.poolPoints} points.`;
+    elements.roundSummary.textContent = `${state.players[state.roundState.winnerIndex].name} wins the clash ${firstTotal} to ${secondTotal} and captures ${state.roundState.poolPoints} points.`;
   }
 }
 
 function renderButtons() {
-  const bothPrimarySelected = state.players.every((player) => player.selectedCardId);
-  const bothFollowUpsSelected = state.players.every((player) => player.followUpCardId);
+  const hasPlayers = state.players.length === 2;
+  const humanPrimaryReady = Boolean(state.players[0]?.selectedCardId);
+  const bothPrimaryReady = state.players.every((player) => player.selectedCardId);
+  const humanFollowUpReady = Boolean(state.players[0]?.followUpCardId);
+  const bothFollowUpsReady = state.players.every((player) => player.followUpCardId);
 
-  elements.lockInBtn.disabled = !(state.phase === "selecting" && bothPrimarySelected);
-  elements.resolveBtn.disabled = state.phase !== "revealed";
-  elements.resolveTiebreakBtn.disabled = !(
-    state.phase === "tiebreak-selecting" && bothFollowUpsSelected
+  elements.lockInBtn.textContent =
+    state.mode === "solo" ? "Lock In Player Card" : "Lock In Primary Cards";
+  elements.lockInBtn.disabled = !(
+    hasPlayers &&
+    state.phase === "selecting" &&
+    (state.mode === "solo" ? humanPrimaryReady : bothPrimaryReady)
   );
-  elements.nextRoundBtn.disabled = state.phase !== "resolved";
+  elements.resolveBtn.disabled = !(hasPlayers && state.phase === "revealed");
+  elements.resolveTiebreakBtn.disabled = !(
+    hasPlayers &&
+    state.phase === "tiebreak-selecting" &&
+    (state.mode === "solo" ? humanFollowUpReady && Boolean(state.players[1]?.followUpCardId) : bothFollowUpsReady)
+  );
+  elements.nextRoundBtn.disabled = !(hasPlayers && state.phase === "resolved");
 
   state.players.forEach((player, playerIndex) => {
     elements.challengeBtns[playerIndex].textContent = `${player.name} Challenge`;
     elements.bullshitBtns[playerIndex].textContent = `${player.name} Bullshit`;
-    elements.challengeBtns[playerIndex].disabled =
-      state.phase !== "revealed" || player.challengesLeft <= 0;
-    elements.bullshitBtns[playerIndex].disabled =
-      state.phase !== "revealed" || player.bullshitLeft <= 0;
   });
+
+  if (!hasPlayers) {
+    elements.challengeBtns.forEach((button) => {
+      button.disabled = true;
+      button.classList.remove("hidden");
+    });
+    elements.bullshitBtns.forEach((button) => {
+      button.disabled = true;
+      button.classList.remove("hidden");
+    });
+    return;
+  }
+
+  if (state.mode === "solo") {
+    elements.challengeBtns[1].classList.add("hidden");
+    elements.bullshitBtns[1].classList.add("hidden");
+    elements.challengeBtns[0].classList.remove("hidden");
+    elements.bullshitBtns[0].classList.remove("hidden");
+    elements.challengeBtns[0].disabled =
+      state.phase !== "revealed" || state.players[0].challengesLeft <= 0;
+    elements.bullshitBtns[0].disabled =
+      state.phase !== "revealed" || state.players[0].bullshitLeft <= 0;
+  } else {
+    elements.challengeBtns.forEach((button, playerIndex) => {
+      button.classList.remove("hidden");
+      button.disabled =
+        state.phase !== "revealed" || state.players[playerIndex].challengesLeft <= 0;
+    });
+    elements.bullshitBtns.forEach((button, playerIndex) => {
+      button.classList.remove("hidden");
+      button.disabled =
+        state.phase !== "revealed" || state.players[playerIndex].bullshitLeft <= 0;
+    });
+  }
 }
 
 function renderLog() {
@@ -872,7 +1292,7 @@ function renderLog() {
 
 function renderStageText() {
   const stageMap = {
-    setup: "Generate a match to begin.",
+    menu: "Choose a mode to begin.",
     selecting: "Secret selection phase",
     revealed: "Default result is visible",
     "tiebreak-selecting": "Follow-up cards are required",
@@ -881,10 +1301,27 @@ function renderStageText() {
   };
 
   elements.roundLabel.textContent = `Round ${state.round} / ${state.maxRounds}`;
-  elements.stageLabel.textContent = stageMap[state.phase];
+  elements.stageLabel.textContent = stageMap[state.phase] ?? "Choose a mode to begin.";
+  elements.matchModeLabel.textContent =
+    state.mode === "solo"
+      ? "Solo mode: curated 40-card player deck vs 40-card random computer deck."
+      : state.mode === "duo"
+        ? "Two-player mode: preserved tag-based setup and current war-mode rules."
+        : "";
+}
+
+function renderScreenVisibility() {
+  elements.menuScreen.classList.toggle("hidden", state.screen !== "menu");
+  elements.soloScreen.classList.toggle("hidden", state.screen !== "solo-setup");
+  elements.duoScreen.classList.toggle("hidden", state.screen !== "duo-setup");
+  elements.hudPanel.classList.toggle("hidden", state.screen !== "match");
+  elements.matchArea.classList.toggle("hidden", state.screen !== "match");
+  elements.logPanel.classList.toggle("hidden", state.screen !== "match");
 }
 
 function render() {
+  renderScreenVisibility();
+  renderSoloBuilder();
   renderStageText();
   renderScoreboard();
   renderPlayerPanel(0);
@@ -895,12 +1332,39 @@ function render() {
   renderLog();
 }
 
-elements.setupForm.addEventListener("submit", buildMatch);
+elements.openSoloModeBtn.addEventListener("click", () => {
+  state.screen = "solo-setup";
+  render();
+});
+
+elements.openDuoModeBtn.addEventListener("click", () => {
+  state.screen = "duo-setup";
+  render();
+});
+
+elements.backFromSoloBtn.addEventListener("click", () => {
+  state.screen = "menu";
+  render();
+});
+
+elements.backFromDuoBtn.addEventListener("click", () => {
+  state.screen = "menu";
+  render();
+});
+
+elements.setupForm.addEventListener("submit", buildDuoMatch);
+elements.soloStartBtn.addEventListener("click", buildSoloMatch);
+elements.soloAddCategoriesBtn.addEventListener("click", addSoloCardsByTags);
+elements.soloRemoveCategoriesBtn.addEventListener("click", removeSoloCardsByTags);
+elements.soloAutofillBtn.addEventListener("click", autoFillSoloDeck);
+elements.soloClearBtn.addEventListener("click", clearSoloDeck);
+elements.soloSearch.addEventListener("input", render);
+
 elements.lockInBtn.addEventListener("click", lockInPrimaryCards);
 elements.resolveBtn.addEventListener("click", resolveRound);
 elements.resolveTiebreakBtn.addEventListener("click", resolveTiebreak);
 elements.nextRoundBtn.addEventListener("click", advanceRound);
-elements.resetBtn.addEventListener("click", resetMatch);
+elements.resetBtn.addEventListener("click", resetMatchToMenu);
 
 elements.challengeBtns.forEach((button, playerIndex) => {
   button.addEventListener("click", () => beginDispute("challenge", playerIndex));
