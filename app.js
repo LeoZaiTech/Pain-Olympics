@@ -286,17 +286,23 @@ const SETTINGS = {
   soloDeckSize: 40,
   challengeUses: 3,
   bullshitUses: 3,
-  computerNames: [
-    "Mall Karen",
-    "Walmart Karen",
-    "Officer Brady",
-    "Sheriff Wright",
-    "AI Support Unit",
-    "The Doomscroll Oracle",
+  computerOpponents: [
+    {
+      name: "Walmart Karen",
+      subtitle: "40-card random computer deck",
+      portraitSrc: "./Docs/UI Inspirations and References/Assets/Walmart Karen.png",
+      portraitAlt: "Walmart Karen portrait",
+    },
+    { name: "Mall Karen", subtitle: "40-card random computer deck" },
+    { name: "Officer Brady", subtitle: "40-card random computer deck" },
+    { name: "Sheriff Wright", subtitle: "40-card random computer deck" },
+    { name: "AI Support Unit", subtitle: "40-card random computer deck" },
+    { name: "The Doomscroll Oracle", subtitle: "40-card random computer deck" },
   ],
 };
 
 const elements = {
+  heroPanel: document.querySelector("#hero-panel"),
   menuScreen: document.querySelector("#menu-screen"),
   soloScreen: document.querySelector("#solo-screen"),
   duoScreen: document.querySelector("#two-player-screen"),
@@ -331,7 +337,7 @@ const elements = {
   roundLabel: document.querySelector("#round-label"),
   stageLabel: document.querySelector("#stage-label"),
   matchModeLabel: document.querySelector("#match-mode-label"),
-  scoreboard: document.querySelector("#scoreboard"),
+  opponentPortrait: document.querySelector("#opponent-portrait"),
   playerPanels: [
     document.querySelector("#player-0-panel"),
     document.querySelector("#player-1-panel"),
@@ -534,6 +540,9 @@ function createPlayer({
   hand = [],
   isComputer = false,
   handVisible = false,
+  subtitle = "",
+  portraitSrc = "",
+  portraitAlt = "",
 }) {
   return {
     name,
@@ -542,6 +551,9 @@ function createPlayer({
     hand,
     isComputer,
     handVisible,
+    subtitle,
+    portraitSrc,
+    portraitAlt,
     selectedCardId: null,
     followUpCardId: null,
     challengesLeft: SETTINGS.challengeUses,
@@ -578,12 +590,17 @@ function createSoloHumanPlayer() {
 }
 
 function createComputerPlayer() {
+  const computerProfile = SETTINGS.computerOpponents[0];
+
   return createPlayer({
-    name: shuffle(SETTINGS.computerNames)[0],
+    name: computerProfile.name,
     tags: ["random-computer-deck"],
     hand: buildRandomDeck(SETTINGS.soloDeckSize),
     isComputer: true,
     handVisible: false,
+    subtitle: computerProfile.subtitle,
+    portraitSrc: computerProfile.portraitSrc,
+    portraitAlt: computerProfile.portraitAlt,
   });
 }
 
@@ -899,13 +916,33 @@ function addLogEntry(message) {
 }
 
 function buildCardMarkup(card) {
+  const primaryTag = tagLabel(card.tags[0] ?? "misc");
+
   return `
-    <div class="card-points">${card.points} pts</div>
-    <div class="card-title">${card.title}</div>
-    <div class="card-tags">
-      ${card.tags
-        .map((tag) => `<span class="player-tag">${tagLabel(tag)}</span>`)
-        .join("")}
+    <div class="card-frame">
+      <div class="card-topline">
+        <div class="card-corner">
+          <span class="corner-value">${card.points}</span>
+          <span class="corner-label">PTS</span>
+        </div>
+        <div class="card-banner">${primaryTag}</div>
+        <div class="card-corner is-flipped">
+          <span class="corner-value">${card.points}</span>
+          <span class="corner-label">PTS</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-title">${card.title}</div>
+      </div>
+
+      <div class="card-bottomline">
+        <div class="card-tags">
+          ${card.tags
+            .map((tag) => `<span class="player-tag">${tagLabel(tag)}</span>`)
+            .join("")}
+        </div>
+      </div>
     </div>
   `;
 }
@@ -1051,7 +1088,7 @@ function renderPlayerPanel(playerIndex) {
         <p class="player-name">${player.name}</p>
         <p class="meta-line">${
           isComputer
-            ? "40-card random computer deck"
+            ? player.subtitle || "40-card random computer deck"
             : `Tags: ${player.tags.map(tagLabel).join(", ") || "Open pool"}`
         }</p>
       </div>
@@ -1115,6 +1152,67 @@ function renderPlayerPanel(playerIndex) {
   });
 }
 
+function renderOpponentPortrait() {
+  const opponent = state.players[1];
+
+  if (!opponent) {
+    elements.opponentPortrait.innerHTML = `
+      <div class="portrait-header">
+        <p class="eyebrow">Opponent Spotlight</p>
+        <div class="mini-pill">Prototype portrait</div>
+      </div>
+      <div class="portrait-frame portrait-frame-placeholder">
+        <div class="portrait-placeholder">
+          <span class="placeholder-kicker">Awaiting Rival</span>
+          <strong class="placeholder-name">No opponent loaded</strong>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (opponent.portraitSrc) {
+    elements.opponentPortrait.innerHTML = `
+      <div class="portrait-header">
+        <p class="eyebrow">Opponent Spotlight</p>
+        <div class="mini-pill">Featured rival</div>
+      </div>
+      <div class="portrait-frame">
+        <img src="${opponent.portraitSrc}" alt="${opponent.portraitAlt || opponent.name}" />
+      </div>
+      <div>
+        <div class="portrait-caption">Current opponent</div>
+        <div class="portrait-name">${opponent.name}</div>
+      </div>
+    `;
+    return;
+  }
+
+  const initials = opponent.name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  elements.opponentPortrait.innerHTML = `
+    <div class="portrait-header">
+      <p class="eyebrow">Opponent Spotlight</p>
+      <div class="mini-pill">Identity panel</div>
+    </div>
+    <div class="portrait-frame portrait-frame-placeholder">
+      <div class="portrait-placeholder">
+        <span class="placeholder-kicker">${opponent.subtitle || "Computer rival"}</span>
+        <strong class="placeholder-name">${initials}</strong>
+      </div>
+    </div>
+    <div>
+      <div class="portrait-caption">Current opponent</div>
+      <div class="portrait-name">${opponent.name}</div>
+    </div>
+  `;
+}
+
 function renderPlayedCards() {
   [0, 1].forEach((playerIndex) => {
     const primaryCard = state.roundState.primarySelections[playerIndex];
@@ -1144,25 +1242,6 @@ function renderPlayedCards() {
       }
     `;
   });
-}
-
-function renderScoreboard() {
-  if (!state.players.length) {
-    elements.scoreboard.innerHTML = "";
-    return;
-  }
-
-  elements.scoreboard.innerHTML = state.players
-    .map(
-      (player) => `
-        <article class="score-card">
-          <strong>${player.name}</strong>
-          <span class="score-value">${player.score}</span>
-          <span class="meta-line">${player.hand.length} cards left in hand</span>
-        </article>
-      `,
-    )
-    .join("");
 }
 
 function renderRoundSummary() {
@@ -1311,6 +1390,7 @@ function renderStageText() {
 }
 
 function renderScreenVisibility() {
+  elements.heroPanel.classList.toggle("hidden", state.screen === "match");
   elements.menuScreen.classList.toggle("hidden", state.screen !== "menu");
   elements.soloScreen.classList.toggle("hidden", state.screen !== "solo-setup");
   elements.duoScreen.classList.toggle("hidden", state.screen !== "duo-setup");
@@ -1320,12 +1400,13 @@ function renderScreenVisibility() {
 }
 
 function render() {
+  document.body.dataset.screen = state.screen;
   renderScreenVisibility();
   renderSoloBuilder();
   renderStageText();
-  renderScoreboard();
   renderPlayerPanel(0);
   renderPlayerPanel(1);
+  renderOpponentPortrait();
   renderPlayedCards();
   renderRoundSummary();
   renderButtons();

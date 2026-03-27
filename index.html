@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="page-shell">
-      <header class="hero panel">
+      <header id="hero-panel" class="hero panel">
         <div class="hero-copy">
           <p class="eyebrow">Prototype Build</p>
           <h1>Pain Olympics</h1>
@@ -193,93 +193,130 @@
 
         <section id="hud-panel" class="panel hud-panel hidden">
           <div class="section-heading">
-            <p class="eyebrow">Match State</p>
             <h2 id="round-label">Round 1 / 5</h2>
           </div>
           <p id="stage-label" class="stage-label">Choose a mode to begin.</p>
           <p id="match-mode-label" class="mode-line"></p>
-          <div id="scoreboard" class="scoreboard"></div>
         </section>
 
-        <section id="match-area" class="match-layout hidden">
-          <section id="player-0-panel" class="panel player-panel"></section>
+        <section id="match-area" class="match-board hidden">
+          <section class="top-stage">
+            <section
+              id="player-1-panel"
+              class="panel-soft player-panel opponent-panel"
+            ></section>
 
-          <section class="panel arena-panel">
-            <div class="section-heading">
-              <p class="eyebrow">Arena</p>
+            <aside id="opponent-portrait" class="panel-soft opponent-portrait">
+              <div class="portrait-header">
+                <p class="eyebrow">Opponent Spotlight</p>
+                <div class="mini-pill">Prototype portrait</div>
+              </div>
+              <div class="portrait-frame portrait-frame-placeholder">
+                <div class="portrait-placeholder">
+                  <span class="placeholder-kicker">Awaiting Rival</span>
+                  <strong class="placeholder-name">No opponent loaded</strong>
+                </div>
+              </div>
+            </aside>
+          </section>
+
+          <section class="battlefield-panel panel-soft">
+            <div class="section-heading compact-heading">
+              <p class="eyebrow">Battlefield</p>
               <h2>Resolve the clash</h2>
             </div>
 
             <div class="revealed-lane">
-              <article class="played-card-slot">
-                <p id="played-label-0" class="slot-label">Player One</p>
-                <div id="played-card-0" class="played-card empty-slot">
-                  No card locked in
-                </div>
-              </article>
               <article class="played-card-slot">
                 <p id="played-label-1" class="slot-label">Player Two</p>
                 <div id="played-card-1" class="played-card empty-slot">
                   No card locked in
                 </div>
               </article>
-            </div>
 
-            <div class="arena-actions">
-              <button id="lock-in-btn" class="primary-button" disabled>
-                Lock In Cards
-              </button>
-              <button id="resolve-btn" class="secondary-button" disabled>
-                Resolve Round
-              </button>
-              <button id="resolve-tiebreak-btn" class="secondary-button" disabled>
-                Resolve Tiebreak
-              </button>
-              <button id="next-round-btn" class="secondary-button" disabled>
-                Next Round
-              </button>
-              <button id="reset-btn" class="ghost-button" type="button">
-                Back to Menu
-              </button>
-            </div>
+              <div class="versus-badge">
+                <span>Clash</span>
+              </div>
 
-            <div class="dispute-actions">
-              <button
-                id="player-0-challenge-btn"
-                class="dispute-button"
-                disabled
-              >
-                Player One Challenge
-              </button>
-              <button
-                id="player-1-challenge-btn"
-                class="dispute-button"
-                disabled
-              >
-                Player Two Challenge
-              </button>
-              <button
-                id="player-0-bullshit-btn"
-                class="dispute-button"
-                disabled
-              >
-                Player One Bullshit
-              </button>
-              <button
-                id="player-1-bullshit-btn"
-                class="dispute-button"
-                disabled
-              >
-                Player Two Bullshit
-              </button>
-            </div>
-
-            <div id="round-summary" class="round-summary">
-              Choose a mode to start playing.
+              <article class="played-card-slot">
+                <p id="played-label-0" class="slot-label">Player One</p>
+                <div id="played-card-0" class="played-card empty-slot">
+                  No card locked in
+                </div>
+              </article>
             </div>
           </section>
 
-          <section id="player-1-panel" class="panel player-panel"></section>
+          <section class="stage-shell player-shell">
+            <div class="command-tray panel-soft">
+              <div class="section-heading compact-heading">
+                <p class="eyebrow">Command Tray</p>
+                <h3>Make your move</h3>
+              </div>
+
+              <div class="arena-actions">
+                <button id="lock-in-btn" class="primary-button" disabled>
+                  Lock In Cards
+                </button>
+                <button id="resolve-btn" class="secondary-button" disabled>
+                  Resolve Round
+                </button>
+                <button
+                  id="resolve-tiebreak-btn"
+                  class="secondary-button"
+                  disabled
+                >
+                  Resolve Tiebreak
+                </button>
+                <button id="next-round-btn" class="secondary-button" disabled>
+                  Next Round
+                </button>
+                <button id="reset-btn" class="ghost-button" type="button">
+                  Back to Menu
+                </button>
+              </div>
+
+              <div class="dispute-actions">
+                <button
+                  id="player-0-challenge-btn"
+                  class="dispute-button"
+                  disabled
+                >
+                  Player One Challenge
+                </button>
+                <button
+                  id="player-1-challenge-btn"
+                  class="dispute-button"
+                  disabled
+                >
+                  Player Two Challenge
+                </button>
+                <button
+                  id="player-0-bullshit-btn"
+                  class="dispute-button"
+                  disabled
+                >
+                  Player One Bullshit
+                </button>
+                <button
+                  id="player-1-bullshit-btn"
+                  class="dispute-button"
+                  disabled
+                >
+                  Player Two Bullshit
+                </button>
+              </div>
+
+              <div id="round-summary" class="round-summary">
+                Choose a mode to start playing.
+              </div>
+            </div>
+
+            <section
+              id="player-0-panel"
+              class="panel-soft player-panel player-hand-panel"
+            ></section>
+          </section>
         </section>
 
         <section id="log-panel" class="panel hidden">

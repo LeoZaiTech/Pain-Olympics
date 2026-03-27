@@ -132,3 +132,60 @@
 - Question: Should players be able to use `challenge` and `bullshit` calls as often as they want, or should those be limited resources per match or per round?
 - Answer: Each player should get 3 `challenge` uses and 3 `bullshit` uses.
 - Working takeaway: Social dispute mechanics are limited resources, which helps keep rounds moving and makes players choose their interventions more strategically.
+
+## Current Design Direction Notes
+
+- Visual direction under consideration: a hybrid of minimalist party-card readability and premium playing-card framing.
+- Working idea: keep the text-heavy bluntness needed for humor, but present cards with stronger borders, corner markers, hierarchy, and physical-card presence.
+- Potential separation:
+  - `War` cards could look more like playable deck cards.
+  - Future `Prompt` cards could lean more toward the stark black-card / white-card contrast of party-card games.
+
+### Question 18
+
+- Status: Answered
+- Question: For `War` mode trauma cards, do you want the main face of the card to feel more like a black-and-white CAH-style joke card, more like an ivory playing card with decorative borders and corner values, or a hybrid where the text area stays minimal but the frame feels like a real deck card?
+- Answer: For now, the visual direction will follow a hybrid approach. `War` mode cards should keep the text readable and blunt, but gain stronger physical-card framing, corner values, and a more premium deck feel. Adding illustrations or pictures to cards is a possible later-stage feature, not a current priority.
+- Working takeaway: The current UI pass should move toward a hybrid card treatment rather than either pure CAH minimalism or ornate traditional deck styling. Future art support should be considered in the layout, but not required yet.
+
+### Question 19
+
+- Status: Answered
+- Question: For the first computer or AI opponent deck, do you want the humor to feel more like frustrated customer support, overworked digital servant, passive-aggressive machine intelligence, or a mix of those?
+- Answer: The first AI or computer opponent deck should be a mix of `overworked digital servant` and `passive-aggressive machine intelligence`.
+- Working takeaway: The AI opponent should feel exhausted, useful, slightly bitter, and self-aware rather than purely robotic or purely goofy. Its deck voice can blend service-worker misery with machine sarcasm.
+
+### Question 20
+
+- Status: Answered
+- Question: Do you want the AI opponent to feel like one specific recurring character with a distinct personality, or more like a general `computer deck` that could later be used by multiple machine-style opponents?
+- Answer: Multiple AI personalities sound better than a single recurring machine character. Possible flavors include a `HAL` type, a `Grok` type, `ChatGPT`, and other distinct machine personas.
+- Working takeaway: The AI/computer lane should become a family of machine-themed opponents rather than one generic bot. The first deck can still be a shared `computer deck` foundation, but it should be extensible into multiple personalities later.
+
+### Question 21
+
+- Status: Answered
+- Question: For the actual game board, which overall mood sounds closest to what you want: smoky casino card table, late-night game show, dystopian therapy office, or terminal-screen machine arena?
+- Answer: A mix of `smoky casino card table` and `late-night game show` feels best for the starting direction. Specific references called out were `Dungeons and Degenerate Gamblers` for the casino-card-table vibe and `Chef's Luv Shack` for the late-night game-show vibe.
+- Working takeaway: The board should feel staged and performative rather than app-like. The visual target is a dramatic table or set with strong atmosphere, clear focal points, and a sense that the player is in a show or match arena rather than browsing a website.
+
+### Question 22
+
+- Status: Answered
+- Question: For the first real board-layout pass, do you want the match screen to feel more like `opponent at the top, arena in the center, your hand at the bottom` or more like `side-by-side dueling panels with a central clash zone`?
+- Answer: The preferred direction is `opponent at the top, arena in the center, your hand at the bottom`, with additional inspiration pulled from Pokemon-style battle presentation.
+- Working takeaway: The match screen should shift away from side-by-side dashboard panels and toward a staged battle layout. The player's hand and controls should live at the bottom, the opponent presence should live at the top, and the central play area should feel like the battlefield.
+
+### Question 23
+
+- Status: Answered
+- Question: For the characters on the battle board, do you want the player and opponents represented primarily by portraits, full-body illustrated avatars, or more abstract nameplate-and-icon identity panels?
+- Answer: Start simple with nameplates and icon-like identity patterns first. Portraits can come later, and full avatars can come after that. If early character images are needed later, generic meme-style visuals could work as placeholders.
+- Working takeaway: The first board pass should not depend on full character art. The UI should be designed so identity can be communicated through nameplates, badges, labels, and framing first, with portraits and avatars added later without redesigning the whole board.
+
+### Question 24
+
+- Status: Answered
+- Question: For the first AI deck, do you want its card text to sound more like `support tickets from hell`, `resentful system logs`, or a blend of both?
+- Answer: The first AI deck should blend `support tickets from hell` with `resentful system logs`.
+- Working takeaway: The machine deck voice should feel like an exhausted service system that is both overloaded and quietly judging humanity. It can mix ticket-queue misery with bitter, self-aware system language.
