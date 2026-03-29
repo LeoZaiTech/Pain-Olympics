@@ -280,12 +280,18 @@ const CARD_POOL = [
   },
 ];
 
+const NPC_DATA_PATHS = {
+  decks: "./data/npc-decks.json",
+  dialogue: "./data/npc-dialogue.json",
+};
+
 const SETTINGS = {
   maxRounds: 5,
   duoHandSize: 10,
   soloDeckSize: 40,
   challengeUses: 3,
   bullshitUses: 3,
+  defaultComputerOpponentKey: "walmart-karen",
   computerOpponents: [
     {
       name: "Walmart Karen",
@@ -376,6 +382,12 @@ const state = {
   players: [],
   roundState: createFreshRoundState(),
   log: [],
+  npcContent: {
+    decks: {},
+    dialogue: {},
+    status: "loading",
+    error: null,
+  },
   soloBuilder: {
     selectedCardIds: new Set(),
   },
@@ -409,7 +421,20 @@ function tagLabel(tagId) {
 }
 
 function cardById(cardId) {
-  return CARD_POOL.find((card) => card.id === cardId) ?? null;
+  if (!cardId) {
+    return null;
+  }
+
+  const mainPoolCard = CARD_POOL.find((card) => card.id === cardId);
+  if (mainPoolCard) {
+    return mainPoolCard;
+  }
+
+  return (
+    state.players
+      .flatMap((player) => player.hand ?? [])
+      .find((card) => card.id === cardId) ?? null
+  );
 }
 
 function selectedTagsFromContainer(container) {
@@ -448,6 +473,89 @@ function buildRandomDeck(size, excludedIds = []) {
   const excludedSet = new Set(excludedIds);
   const availableCards = CARD_POOL.filter((card) => !excludedSet.has(card.id));
   return shuffle(availableCards).slice(0, size);
+}
+
+function randomItem(items = []) {
+  if (!items.length) {
+    return null;
+  }
+
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function uniqueCards(cards) {
+  const seenCardIds = new Set();
+
+  return cards.filter((card) => {
+    if (!card?.id || seenCardIds.has(card.id)) {
+      return false;
+    }
+
+    seenCardIds.add(card.id);
+    return true;
+  });
+}
+
+function getNpcDeckPack(npcKey) {
+  return state.npcContent.decks[npcKey] ?? null;
+}
+
+function getNpcDialoguePack(npcKey) {
+  return state.npcContent.dialogue[npcKey] ?? null;
+}
+
+function pickNpcLine(npcKey, lineType) {
+  const dialoguePack = getNpcDialoguePack(npcKey);
+  return randomItem(dialoguePack?.[lineType] ?? []);
+}
+
+function buildNpcDeck(npcKey) {
+  const deckPack = getNpcDeckPack(npcKey);
+
+  if (!deckPack) {
+    return buildRandomDeck(SETTINGS.soloDeckSize);
+  }
+
+  const baseCards = (deckPack.baseCardIds ?? []).map(cardById).filter(Boolean);
+  const exclusiveCards = (deckPack.exclusiveCards ?? []).filter(
+    (card) => card?.id && card?.title,
+  );
+  const curatedCards = uniqueCards([...baseCards, ...exclusiveCards]);
+  const fillerCards = buildRandomDeck(
+    Math.max(SETTINGS.soloDeckSize - curatedCards.length, 0),
+    curatedCards.map((card) => card.id),
+  );
+
+  return shuffle([...curatedCards, ...fillerCards]).slice(0, SETTINGS.soloDeckSize);
+}
+
+async function initializeNpcContent() {
+  try {
+    const [decksResponse, dialogueResponse] = await Promise.all([
+      fetch(NPC_DATA_PATHS.decks),
+      fetch(NPC_DATA_PATHS.dialogue),
+    ]);
+
+    if (!decksResponse.ok || !dialogueResponse.ok) {
+      throw new Error("NPC content failed to load.");
+    }
+
+    const [decks, dialogue] = await Promise.all([
+      decksResponse.json(),
+      dialogueResponse.json(),
+    ]);
+
+    state.npcContent.decks = decks;
+    state.npcContent.dialogue = dialogue;
+    state.npcContent.status = "ready";
+    state.npcContent.error = null;
+  } catch (error) {
+    console.error("Pain Olympics NPC content load failed.", error);
+    state.npcContent.status = "error";
+    state.npcContent.error = error;
+  } finally {
+    render();
+  }
 }
 
 function buildHandFromTags(selectedTags, size) {
@@ -543,6 +651,7 @@ function createPlayer({
   subtitle = "",
   portraitSrc = "",
   portraitAlt = "",
+  npcKey = "",
 }) {
   return {
     name,
@@ -554,6 +663,7 @@ function createPlayer({
     subtitle,
     portraitSrc,
     portraitAlt,
+    npcKey,
     selectedCardId: null,
     followUpCardId: null,
     challengesLeft: SETTINGS.challengeUses,
@@ -590,17 +700,25 @@ function createSoloHumanPlayer() {
 }
 
 function createComputerPlayer() {
+  const npcKey = SETTINGS.defaultComputerOpponentKey;
+  const deckPack = getNpcDeckPack(npcKey);
   const computerProfile = SETTINGS.computerOpponents[0];
+  const resolvedName = deckPack?.name ?? computerProfile.name;
+  const resolvedSubtitle = deckPack?.subtitle ?? computerProfile.subtitle;
+  const resolvedPortraitSrc = deckPack?.portraitSrc ?? computerProfile.portraitSrc;
+  const resolvedPortraitAlt =
+    deckPack?.portraitAlt ?? computerProfile.portraitAlt ?? `${resolvedName} portrait`;
 
   return createPlayer({
-    name: computerProfile.name,
-    tags: ["random-computer-deck"],
-    hand: buildRandomDeck(SETTINGS.soloDeckSize),
+    name: resolvedName,
+    tags: ["npc-deck", npcKey],
+    hand: buildNpcDeck(npcKey),
     isComputer: true,
     handVisible: false,
-    subtitle: computerProfile.subtitle,
-    portraitSrc: computerProfile.portraitSrc,
-    portraitAlt: computerProfile.portraitAlt,
+    subtitle: resolvedSubtitle,
+    portraitSrc: resolvedPortraitSrc,
+    portraitAlt: resolvedPortraitAlt,
+    npcKey,
   });
 }
 
@@ -619,6 +737,13 @@ function startMatch(mode, players) {
       ? `${players[0].name} enters the arena against ${players[1].name}.`
       : "Two-player match generated. Both players can reveal their own hands and choose a primary card.",
   );
+
+  if (mode === "solo") {
+    const preTaunt = pickNpcLine(players[1].npcKey, "preTaunts");
+    if (preTaunt) {
+      addLogEntry(`${players[1].name}: "${preTaunt}"`);
+    }
+  }
 
   render();
 }
@@ -849,6 +974,16 @@ function finalizeRound(winnerIndex) {
     addLogEntry(
       `${state.players[winnerIndex].name} takes ${poolPoints} points from the clash.`,
     );
+
+    if (state.mode === "solo") {
+      const computerPlayer = state.players[1];
+      const lineType = winnerIndex === 1 ? "winLines" : "lossLines";
+      const reactionLine = pickNpcLine(computerPlayer?.npcKey, lineType);
+
+      if (reactionLine) {
+        addLogEntry(`${computerPlayer.name}: "${reactionLine}"`);
+      }
+    }
   } else {
     addLogEntry("The tiebreak ended in a stalemate. No one takes points this round.");
   }
@@ -961,7 +1096,7 @@ function renderSoloBuilder() {
   });
 
   elements.soloDeckCounter.textContent = `${selectedIds.size} / ${SETTINGS.soloDeckSize} selected`;
-  elements.soloSelectionSummary.textContent =
+  let selectionSummary =
     selectedIds.size === 0
       ? "Pick individual cards, bulk-add them by category, or mix both approaches."
       : selectedIds.size < SETTINGS.soloDeckSize
@@ -969,7 +1104,16 @@ function renderSoloBuilder() {
             SETTINGS.soloDeckSize - selectedIds.size
           } slots with random cards.`
         : "Your 40-card solo deck is full and ready to go.";
-  elements.soloStartBtn.disabled = selectedIds.size === 0;
+
+  if (state.npcContent.status === "loading") {
+    selectionSummary = `${selectionSummary} Loading Walmart Karen's themed deck and dialogue pack.`;
+  } else if (state.npcContent.status === "error") {
+    selectionSummary = `${selectionSummary} NPC content failed to load, so solo mode will fall back to the default prototype opponent.`;
+  }
+
+  elements.soloSelectionSummary.textContent = selectionSummary;
+  elements.soloStartBtn.disabled =
+    selectedIds.size === 0 || state.npcContent.status === "loading";
 
   elements.soloCardLibrary.innerHTML = filteredCards.length
     ? filteredCards
@@ -1383,7 +1527,9 @@ function renderStageText() {
   elements.stageLabel.textContent = stageMap[state.phase] ?? "Choose a mode to begin.";
   elements.matchModeLabel.textContent =
     state.mode === "solo"
-      ? "Solo mode: curated 40-card player deck vs 40-card random computer deck."
+      ? state.players[1]
+        ? `Solo mode: curated 40-card player deck vs ${state.players[1].name}'s themed computer deck.`
+        : "Solo mode: curated 40-card player deck vs themed computer opponent."
       : state.mode === "duo"
         ? "Two-player mode: preserved tag-based setup and current war-mode rules."
         : "";
@@ -1457,3 +1603,4 @@ elements.bullshitBtns.forEach((button, playerIndex) => {
 
 buildTagInputs();
 render();
+initializeNpcContent();

@@ -1,0 +1,131 @@
+{
+  "walmart-karen": {
+    "name": "Walmart Karen",
+    "subtitle": "Grievance-maxed store warrior",
+    "portraitSrc": "./Docs/UI Inspirations and References/Assets/Walmart Karen.png",
+    "baseCardIds": [
+      "news-propaganda",
+      "fbi-good-guys",
+      "black-sites",
+      "aliens-abduct",
+      "matrix-too-young",
+      "war-crime-spite",
+      "covid-stole-event",
+      "simulation-glitching",
+      "post-election-dread",
+      "apocalyptic-dreams",
+      "city-never-masked",
+      "interesting-pta"
+    ],
+    "exclusiveCards": [
+      {
+        "id": "asked-manager-before-reading-sign",
+        "title": "Asked for the Manager Before Reading the Sign",
+        "points": 5,
+        "tags": ["work", "culture"]
+      },
+      {
+        "id": "store-policy-hate-crime",
+        "title": "Treats Store Policy Like a Hate Crime",
+        "points": 7,
+        "tags": ["culture", "identity"]
+      },
+      {
+        "id": "facebook-university-graduate",
+        "title": "Facebook University Graduate",
+        "points": 5,
+        "tags": ["internet", "culture"]
+      },
+      {
+        "id": "coupon-combat-veteran",
+        "title": "Coupon Combat Veteran",
+        "points": 4,
+        "tags": ["work", "culture"]
+      },
+      {
+        "id": "i-pay-your-salary-spell",
+        "title": "Says \"I Pay Your Salary\" Like a Spell",
+        "points": 6,
+        "tags": ["work", "culture"]
+      },
+      {
+        "id": "called-corporate-over-pride-flag",
+        "title": "Called Corporate Over a Pride Flag",
+        "points": 8,
+        "tags": ["culture", "identity"]
+      },
+      {
+        "id": "mispronounced-it-on-purpose",
+        "title": "Mispronounced It on Purpose",
+        "points": 7,
+        "tags": ["identity", "culture"]
+      },
+      {
+        "id": "confuses-feared-with-respected",
+        "title": "Confuses Being Feared with Being Respected",
+        "points": 6,
+        "tags": ["identity", "culture"]
+      },
+      {
+        "id": "sent-my-child-to-buy-my-cigarettes",
+        "title": "Sent My Child to Buy My Cigarettes",
+        "points": 6,
+        "tags": ["family", "work"]
+      },
+      {
+        "id": "got-cancer-from-chain-smoking-in-the-house",
+        "title": "Got Cancer from Chain-Smoking in the House",
+        "points": 7,
+        "tags": ["health", "family"]
+      },
+      {
+        "id": "sister-was-my-momma",
+        "title": "Found Out My Sister Was My Momma and My Momma Was My Grandmomma",
+        "points": 9,
+        "tags": ["family", "culture"]
+      },
+      {
+        "id": "tased-during-january-6-riot",
+        "title": "Tased During the January 6th Riot",
+        "points": 8,
+        "tags": ["collapse", "culture"]
+      },
+      {
+        "id": "judged-harshly-for-my-rebel-flag",
+        "title": "Judged Harshly for My Rebel Flag",
+        "points": 6,
+        "tags": ["identity", "culture"]
+      },
+      {
+        "id": "judged-harshly-for-my-maga-flag",
+        "title": "Judged Harshly for My MAGA Flag",
+        "points": 6,
+        "tags": ["identity", "culture"]
+      },
+      {
+        "id": "got-my-ass-beat-for-saying-the-n-word",
+        "title": "Got My Ass Beat for Saying the N-Word",
+        "points": 7,
+        "tags": ["identity", "culture"]
+      },
+      {
+        "id": "banned-from-thanksgiving-for-calling-my-nephew-the-q-slur",
+        "title": "Banned from Thanksgiving for Calling My Nephew the Q-Slur",
+        "points": 7,
+        "tags": ["family", "identity"]
+      },
+      {
+        "id": "cant-drink-my-mountain-dew-no-more-cause-i-got-diabeetus",
+        "title": "Can't Drink My Mountain Dew No More Cause I Got Diabeetus",
+        "points": 6,
+        "tags": ["health", "culture"]
+      }
+    ],
+    "designNotes": [
+      "Satirize grievance behavior, public humiliation, and conspiratorial victimhood.",
+      "Keep the voice memeable and quotable without relying on slurs.",
+      "Let part of the humor come from things the character wrongly experiences as persecution.",
+      "Treat this as a growing character pack built from 12 main-pool pulls plus Karen-exclusive cards."
+    ]
+  }
+}

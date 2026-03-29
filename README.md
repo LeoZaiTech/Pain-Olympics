@@ -11,7 +11,7 @@ Early concept and prototype work for a dark-humor card game about personalized t
 
 ## Prototype
 
-The current prototype is a minimal Node-powered web app with no external dependencies.
+The current prototype is a lightweight Node-powered web app. It now includes local JSON-backed NPC content and Playwright as a dev dependency for smoke testing.
 
 ## Run It
 
@@ -39,11 +39,12 @@ Current prototype supports:
 - preserved 2-player `War` mode setup
 - solo deck building by category or individual card selection
 - solo auto-fill up to a 40-card player deck
-- a computer rival with a 40-card random deck
+- a themed `Walmart Karen` solo opponent sourced from JSON deck/dialogue files
 - visible point values
 - 3 `challenge` and 3 `bullshit` uses per player
 - follow-up-card tiebreak flow
 - round scoring and match scoring
+- pre-match taunts and round-result reactions in the match log for the current solo NPC
 
 Current prototype assumptions:
 
@@ -52,3 +53,9 @@ Current prototype assumptions:
 - 40-card decks for solo mode
 - same-browser simulation with a shared UI
 - ties after the follow-up card become a stalemate
+
+Related data/docs:
+
+- `data/npc-decks.json`: runtime NPC deck definitions
+- `data/npc-dialogue.json`: runtime NPC taunts and reactions
+- `Docs/NPC Profiles/Walmart Karen.md`: current NPC design spec
