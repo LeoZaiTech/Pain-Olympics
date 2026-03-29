@@ -335,8 +335,10 @@ const elements = {
   matchArea: document.querySelector("#match-area"),
   logPanel: document.querySelector("#log-panel"),
   roundLabel: document.querySelector("#round-label"),
+  phasePill: document.querySelector("#phase-pill"),
   stageLabel: document.querySelector("#stage-label"),
   matchModeLabel: document.querySelector("#match-mode-label"),
+  roundProgressFill: document.querySelector("#round-progress-fill"),
   opponentPortrait: document.querySelector("#opponent-portrait"),
   playerPanels: [
     document.querySelector("#player-0-panel"),
@@ -1085,6 +1087,7 @@ function renderPlayerPanel(playerIndex) {
   elements.playerPanels[playerIndex].innerHTML = `
     <div class="player-header">
       <div>
+        <div class="mini-pill">${playerIndex === 0 ? "Your Side" : "Opponent"}</div>
         <p class="player-name">${player.name}</p>
         <p class="meta-line">${
           isComputer
@@ -1371,22 +1374,48 @@ function renderLog() {
 
 function renderStageText() {
   const stageMap = {
-    menu: "Choose a mode to begin.",
-    selecting: "Secret selection phase",
-    revealed: "Default result is visible",
-    "tiebreak-selecting": "Follow-up cards are required",
-    resolved: "Round resolved",
-    "match-over": "Match complete",
+    menu: {
+      label: "Standby",
+      copy: "Choose a mode to begin.",
+    },
+    selecting: {
+      label: "Hidden Pick",
+      copy: "Lock in primary cards before the reveal.",
+    },
+    revealed: {
+      label: "Reveal",
+      copy: "Default outcome is live. Accept it or trigger a dispute.",
+    },
+    "tiebreak-selecting": {
+      label: "Tiebreak",
+      copy: "Follow-up cards are now required.",
+    },
+    resolved: {
+      label: "Resolved",
+      copy: "Round complete. Advance when ready.",
+    },
+    "match-over": {
+      label: "Final",
+      copy: "Match complete. Return to menu for a new run.",
+    },
   };
 
+  const stageMeta = stageMap[state.phase] ?? stageMap.menu;
+  const progressPercent =
+    state.screen === "match" ? Math.round((state.round / state.maxRounds) * 100) : 0;
   elements.roundLabel.textContent = `Round ${state.round} / ${state.maxRounds}`;
-  elements.stageLabel.textContent = stageMap[state.phase] ?? "Choose a mode to begin.";
+  elements.phasePill.textContent = stageMeta.label;
+  elements.stageLabel.textContent = stageMeta.copy;
   elements.matchModeLabel.textContent =
     state.mode === "solo"
-      ? "Solo mode: curated 40-card player deck vs 40-card random computer deck."
+      ? "Solo mode • curated 40-card player deck vs 40-card random computer deck."
       : state.mode === "duo"
-        ? "Two-player mode: preserved tag-based setup and current war-mode rules."
+        ? "Two-player mode • preserved tag setup and current war-mode rules."
         : "";
+
+  if (elements.roundProgressFill) {
+    elements.roundProgressFill.style.width = `${progressPercent}%`;
+  }
 }
 
 function renderScreenVisibility() {

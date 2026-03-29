@@ -7,3 +7,5 @@ Original prompt: Clean up the match UI by removing the Match State label and red
 - 2026-03-26: Verified `node --check app.js`, confirmed the served HTML over `http://127.0.0.1:3000`, and captured fresh menu/match screenshots with an elevated local Playwright smoke script after installing the required browser.
 - Note: The bundled `develop-web-game` Playwright client could not be used directly because it resolves `playwright` relative to the skill folder instead of this project; local Playwright was used as the fallback verification path.
 - TODO: Revisit React/Vite migration once the board layout and solo flow feel stable enough to port cleanly.
+- 2026-03-29: Ran another match-board polish pass to better match the documented casino-meets-gameshow vision by tightening hero copy, upgrading the in-match HUD to a broadcast-style ribbon with explicit phase labeling, and improving board atmosphere styling.
+- 2026-03-29: Added a visible round progress meter to the HUD and clearer side labels (`Your Side` / `Opponent`) in player panels so match state reads more obviously during testing.
