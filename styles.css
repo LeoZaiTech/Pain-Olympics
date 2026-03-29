@@ -275,6 +275,63 @@ body[data-screen="match"] #log-panel {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+body[data-screen="match"] .hud-panel {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.55rem;
+  padding-block: 1rem;
+  background:
+    radial-gradient(circle at top left, rgba(211, 81, 43, 0.15), transparent 24%),
+    linear-gradient(180deg, rgba(253, 245, 234, 0.92), rgba(243, 231, 216, 0.9));
+}
+
+body[data-screen="match"] .hud-panel .section-heading {
+  gap: 0.35rem;
+}
+
+body[data-screen="match"] .hud-panel .section-heading,
+body[data-screen="match"] .hud-panel .phase-pill {
+  grid-row: 1;
+}
+
+body[data-screen="match"] .hud-panel .stage-label,
+body[data-screen="match"] .hud-panel .mode-line,
+body[data-screen="match"] .hud-panel .round-progress {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.phase-pill {
+  width: fit-content;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 19, 22, 0.15);
+  background: rgba(255, 255, 255, 0.84);
+  color: var(--accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.round-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(37, 19, 22, 0.14);
+  overflow: hidden;
+}
+
+.round-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #f0af4e);
+  transition: width 220ms ease;
+}
+
 .setup-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -593,6 +650,24 @@ button:disabled {
   pointer-events: none;
 }
 
+.match-board::after {
+  content: "Main Event";
+  position: absolute;
+  top: 0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.36rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 241, 224, 0.88);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.64rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+
 .stage-shell,
 .top-stage,
 .battlefield-panel {
@@ -733,6 +808,7 @@ button:disabled {
 .player-hand-panel {
   min-height: 100%;
   background: linear-gradient(180deg, rgba(255, 250, 244, 0.92), rgba(237, 223, 208, 0.82));
+  border-color: rgba(255, 244, 231, 0.24);
 }
 
 .command-tray {
@@ -778,7 +854,7 @@ button:disabled {
 }
 
 .player-name {
-  margin: 0;
+  margin: 0.25rem 0 0;
   font-size: 1.45rem;
 }
 
@@ -913,6 +989,10 @@ button:disabled {
   min-height: 5rem;
 }
 
+.stage-label {
+  font-weight: 600;
+}
+
 .match-log {
   margin: 0;
   padding-left: 1.25rem;
@@ -947,6 +1027,20 @@ button:disabled {
   .opponent-portrait {
     max-width: 340px;
     justify-self: end;
+  }
+
+  body[data-screen="match"] .hud-panel {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  body[data-screen="match"] .hud-panel .section-heading,
+  body[data-screen="match"] .hud-panel .phase-pill,
+  body[data-screen="match"] .hud-panel .stage-label,
+  body[data-screen="match"] .hud-panel .mode-line,
+  body[data-screen="match"] .hud-panel .round-progress {
+    grid-column: 1;
+    grid-row: auto;
   }
 }
 

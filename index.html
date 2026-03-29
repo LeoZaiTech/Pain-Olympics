@@ -13,9 +13,8 @@
           <p class="eyebrow">Prototype Build</p>
           <h1>Pain Olympics</h1>
           <p class="hero-text">
-            Choose your mode, build your damage, and throw it into the arena.
-            This refactor keeps the original two-player setup while opening the
-            door to a real solo flow.
+            A staged battle board for dark-humor card duels. Build your deck,
+            step into the spotlight, and resolve each clash with visible stakes.
           </p>
           <div class="hero-pills">
             <span>Mode Menu</span>
@@ -27,9 +26,9 @@
         <div class="hero-note">
           <p class="note-title">Current build focus</p>
           <p>
-            One-player mode lets you curate a deck by category or individual
-            cards, then face a computer rival with 40 random cards. Two-player
-            mode preserves the existing setup for side-by-side testing.
+            Solo mode lets you curate a 40-card deck and face a themed rival.
+            Two-player mode keeps the current setup flow while the board style
+            moves toward the casino-meets-gameshow vision.
           </p>
         </div>
       </header>
@@ -195,8 +194,12 @@
           <div class="section-heading">
             <h2 id="round-label">Round 1 / 5</h2>
           </div>
+          <div id="phase-pill" class="phase-pill">Standby</div>
           <p id="stage-label" class="stage-label">Choose a mode to begin.</p>
           <p id="match-mode-label" class="mode-line"></p>
+          <div class="round-progress" aria-hidden="true">
+            <span id="round-progress-fill"></span>
+          </div>
         </section>
 
         <section id="match-area" class="match-board hidden">
