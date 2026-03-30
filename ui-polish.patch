@@ -1,0 +1,222 @@
+diff --git a/app.js b/app.js
+index 6fffd5a..536e40c 100644
+--- a/app.js
++++ b/app.js
+@@ -335,6 +335,7 @@ const elements = {
+   matchArea: document.querySelector("#match-area"),
+   logPanel: document.querySelector("#log-panel"),
+   roundLabel: document.querySelector("#round-label"),
++  phasePill: document.querySelector("#phase-pill"),
+   stageLabel: document.querySelector("#stage-label"),
+   matchModeLabel: document.querySelector("#match-mode-label"),
+   opponentPortrait: document.querySelector("#opponent-portrait"),
+@@ -1371,21 +1372,41 @@ function renderLog() {
+ 
+ function renderStageText() {
+   const stageMap = {
+-    menu: "Choose a mode to begin.",
+-    selecting: "Secret selection phase",
+-    revealed: "Default result is visible",
+-    "tiebreak-selecting": "Follow-up cards are required",
+-    resolved: "Round resolved",
+-    "match-over": "Match complete",
++    menu: {
++      label: "Standby",
++      copy: "Choose a mode to begin.",
++    },
++    selecting: {
++      label: "Hidden Pick",
++      copy: "Lock in primary cards before the reveal.",
++    },
++    revealed: {
++      label: "Reveal",
++      copy: "Default outcome is live. Accept it or trigger a dispute.",
++    },
++    "tiebreak-selecting": {
++      label: "Tiebreak",
++      copy: "Follow-up cards are now required.",
++    },
++    resolved: {
++      label: "Resolved",
++      copy: "Round complete. Advance when ready.",
++    },
++    "match-over": {
++      label: "Final",
++      copy: "Match complete. Return to menu for a new run.",
++    },
+   };
+ 
++  const stageMeta = stageMap[state.phase] ?? stageMap.menu;
+   elements.roundLabel.textContent = `Round ${state.round} / ${state.maxRounds}`;
+-  elements.stageLabel.textContent = stageMap[state.phase] ?? "Choose a mode to begin.";
++  elements.phasePill.textContent = stageMeta.label;
++  elements.stageLabel.textContent = stageMeta.copy;
+   elements.matchModeLabel.textContent =
+     state.mode === "solo"
+-      ? "Solo mode: curated 40-card player deck vs 40-card random computer deck."
++      ? "Solo mode • curated 40-card player deck vs 40-card random computer deck."
+       : state.mode === "duo"
+-        ? "Two-player mode: preserved tag-based setup and current war-mode rules."
++        ? "Two-player mode • preserved tag setup and current war-mode rules."
+         : "";
+ }
+ 
+diff --git a/index.html b/index.html
+index 8d39336..0c377da 100644
+--- a/index.html
++++ b/index.html
+@@ -13,9 +13,8 @@
+           <p class="eyebrow">Prototype Build</p>
+           <h1>Pain Olympics</h1>
+           <p class="hero-text">
+-            Choose your mode, build your damage, and throw it into the arena.
+-            This refactor keeps the original two-player setup while opening the
+-            door to a real solo flow.
++            A staged battle board for dark-humor card duels. Build your deck,
++            step into the spotlight, and resolve each clash with visible stakes.
+           </p>
+           <div class="hero-pills">
+             <span>Mode Menu</span>
+@@ -27,9 +26,9 @@
+         <div class="hero-note">
+           <p class="note-title">Current build focus</p>
+           <p>
+-            One-player mode lets you curate a deck by category or individual
+-            cards, then face a computer rival with 40 random cards. Two-player
+-            mode preserves the existing setup for side-by-side testing.
++            Solo mode lets you curate a 40-card deck and face a themed rival.
++            Two-player mode keeps the current setup flow while the board style
++            moves toward the casino-meets-gameshow vision.
+           </p>
+         </div>
+       </header>
+@@ -195,6 +194,7 @@
+           <div class="section-heading">
+             <h2 id="round-label">Round 1 / 5</h2>
+           </div>
++          <div id="phase-pill" class="phase-pill">Standby</div>
+           <p id="stage-label" class="stage-label">Choose a mode to begin.</p>
+           <p id="match-mode-label" class="mode-line"></p>
+         </section>
+diff --git a/progress.md b/progress.md
+index fa42d26..15830f8 100644
+--- a/progress.md
++++ b/progress.md
+@@ -7,3 +7,4 @@ Original prompt: Clean up the match UI by removing the Match State label and red
+ - 2026-03-26: Verified `node --check app.js`, confirmed the served HTML over `http://127.0.0.1:3000`, and captured fresh menu/match screenshots with an elevated local Playwright smoke script after installing the required browser.
+ - Note: The bundled `develop-web-game` Playwright client could not be used directly because it resolves `playwright` relative to the skill folder instead of this project; local Playwright was used as the fallback verification path.
+ - TODO: Revisit React/Vite migration once the board layout and solo flow feel stable enough to port cleanly.
++- 2026-03-29: Ran another match-board polish pass to better match the documented casino-meets-gameshow vision by tightening hero copy, upgrading the in-match HUD to a broadcast-style ribbon with explicit phase labeling, and improving board atmosphere styling.
+diff --git a/styles.css b/styles.css
+index af77fa9..f2179ea 100644
+--- a/styles.css
++++ b/styles.css
+@@ -275,6 +275,46 @@ body[data-screen="match"] #log-panel {
+   border-color: rgba(255, 255, 255, 0.08);
+ }
+ 
++body[data-screen="match"] .hud-panel {
++  display: grid;
++  grid-template-columns: auto auto 1fr;
++  align-items: center;
++  column-gap: 1rem;
++  row-gap: 0.55rem;
++  padding-block: 1rem;
++  background:
++    radial-gradient(circle at top left, rgba(211, 81, 43, 0.15), transparent 24%),
++    linear-gradient(180deg, rgba(253, 245, 234, 0.92), rgba(243, 231, 216, 0.9));
++}
++
++body[data-screen="match"] .hud-panel .section-heading {
++  gap: 0.35rem;
++}
++
++body[data-screen="match"] .hud-panel .section-heading,
++body[data-screen="match"] .hud-panel .phase-pill {
++  grid-row: 1;
++}
++
++body[data-screen="match"] .hud-panel .stage-label,
++body[data-screen="match"] .hud-panel .mode-line {
++  grid-column: 1 / -1;
++  margin: 0;
++}
++
++.phase-pill {
++  width: fit-content;
++  padding: 0.4rem 0.8rem;
++  border-radius: 999px;
++  border: 1px solid rgba(37, 19, 22, 0.15);
++  background: rgba(255, 255, 255, 0.84);
++  color: var(--accent-dark);
++  text-transform: uppercase;
++  letter-spacing: 0.14em;
++  font-size: 0.72rem;
++  font-weight: 800;
++}
++
+ .setup-grid {
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+ }
+@@ -593,6 +633,24 @@ button:disabled {
+   pointer-events: none;
+ }
+ 
++.match-board::after {
++  content: "Main Event";
++  position: absolute;
++  top: 0.8rem;
++  left: 50%;
++  transform: translateX(-50%);
++  padding: 0.36rem 0.95rem;
++  border-radius: 999px;
++  border: 1px solid rgba(255, 255, 255, 0.24);
++  background: rgba(0, 0, 0, 0.22);
++  color: rgba(255, 241, 224, 0.88);
++  text-transform: uppercase;
++  letter-spacing: 0.22em;
++  font-size: 0.64rem;
++  font-weight: 700;
++  pointer-events: none;
++}
++
+ .stage-shell,
+ .top-stage,
+ .battlefield-panel {
+@@ -733,6 +791,7 @@ button:disabled {
+ .player-hand-panel {
+   min-height: 100%;
+   background: linear-gradient(180deg, rgba(255, 250, 244, 0.92), rgba(237, 223, 208, 0.82));
++  border-color: rgba(255, 244, 231, 0.24);
+ }
+ 
+ .command-tray {
+@@ -913,6 +972,10 @@ button:disabled {
+   min-height: 5rem;
+ }
+ 
++.stage-label {
++  font-weight: 600;
++}
++
+ .match-log {
+   margin: 0;
+   padding-left: 1.25rem;
+@@ -948,6 +1011,19 @@ button:disabled {
+     max-width: 340px;
+     justify-self: end;
+   }
++
++  body[data-screen="match"] .hud-panel {
++    grid-template-columns: 1fr;
++    align-items: start;
++  }
++
++  body[data-screen="match"] .hud-panel .section-heading,
++  body[data-screen="match"] .hud-panel .phase-pill,
++  body[data-screen="match"] .hud-panel .stage-label,
++  body[data-screen="match"] .hud-panel .mode-line {
++    grid-column: 1;
++    grid-row: auto;
++  }
+ }
