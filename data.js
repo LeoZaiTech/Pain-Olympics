@@ -1,0 +1,328 @@
+/**
+ * Pain Olympics - Data Module
+ *
+ * This file contains all game data constants that are consumed by app.js.
+ * Separating data from logic makes it easier for AI agents and contributors
+ * to add cards, tags, and NPC configurations without touching game logic.
+ *
+ * Exports (via window object for vanilla JS compatibility):
+ * - TAGS: Category definitions for card filtering
+ * - CARD_POOL: All playable cards with points and tags
+ * - NPC_DATA_PATHS: Paths to runtime NPC JSON files
+ * - SETTINGS: Game configuration constants
+ */
+
+const TAGS = [
+  { id: "family", label: "Family Systems" },
+  { id: "identity", label: "Identity" },
+  { id: "health", label: "Mental Health" },
+  { id: "internet", label: "Internet Damage" },
+  { id: "culture", label: "Cultural Baggage" },
+  { id: "religion", label: "Religious Trauma" },
+  { id: "collapse", label: "Collapse Dread" },
+  { id: "work", label: "Work and Class" },
+];
+
+const CARD_POOL = [
+  { id: "dead-father", title: "Dead Father", points: 9, tags: ["family"] },
+  { id: "abusive-stepfather", title: "Abusive Stepfather", points: 8, tags: ["family"] },
+  {
+    id: "mentally-ill-parents",
+    title: "Mentally Ill Parents",
+    points: 8,
+    tags: ["family", "health"],
+  },
+  {
+    id: "religious-trauma",
+    title: "Religious Trauma",
+    points: 7,
+    tags: ["family", "religion"],
+  },
+  {
+    id: "translator-parents",
+    title: "Translator for Your Immigrant Parents",
+    points: 7,
+    tags: ["family", "culture"],
+  },
+  {
+    id: "ramen-neglect",
+    title: "Ramen and Emotional Neglect",
+    points: 7,
+    tags: ["family", "work"],
+  },
+  {
+    id: "smart-disappointment",
+    title: "The Smart One and The Disappointment",
+    points: 6,
+    tags: ["family", "health"],
+  },
+  { id: "autistic", title: "Autistic", points: 6, tags: ["identity", "health"] },
+  {
+    id: "adhd-faking",
+    title: "Diagnosed ADHD but Still Think You're Faking It",
+    points: 6,
+    tags: ["identity", "health"],
+  },
+  {
+    id: "called-slur",
+    title: "Got Called a Slur Before Puberty",
+    points: 8,
+    tags: ["identity", "culture"],
+  },
+  {
+    id: "therapist-worse",
+    title: "Saw a Therapist Once and Got Worse",
+    points: 6,
+    tags: ["health"],
+  },
+  {
+    id: "internet-validation",
+    title: "Addicted to Internet Validation",
+    points: 5,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "deviantart-phase",
+    title: "You Had a DeviantArt Phase",
+    points: 4,
+    tags: ["internet"],
+  },
+  {
+    id: "tumblr-bible",
+    title: "Used Tumblr Like a Bible",
+    points: 5,
+    tags: ["internet"],
+  },
+  {
+    id: "linkin-park",
+    title: "Thought Linkin Park Understood You",
+    points: 4,
+    tags: ["internet", "culture"],
+  },
+  {
+    id: "world-war-live",
+    title: "Learned About World War 2 and Then Watched It Rhyming in Real Time",
+    points: 8,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "news-propaganda",
+    title: "Realizing the News Is Propaganda Too",
+    points: 6,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "aliens-abduct",
+    title: "Begged Aliens or God to Abduct You",
+    points: 5,
+    tags: ["collapse", "religion"],
+  },
+  {
+    id: "too-unwell-drafted",
+    title: "Too Mentally Unwell to Be Drafted",
+    points: 7,
+    tags: ["health", "collapse"],
+  },
+  {
+    id: "emotional-support-gifted",
+    title: "Emotional Support Gifted Kid",
+    points: 5,
+    tags: ["health", "culture"],
+  },
+  {
+    id: "cant-afford-therapy",
+    title: "Can't Afford Therapy and Psychoanalyze Your Therapist",
+    points: 7,
+    tags: ["health", "work"],
+  },
+  {
+    id: "matrix-too-young",
+    title: "Saw The Matrix Too Young",
+    points: 4,
+    tags: ["culture", "internet"],
+  },
+  {
+    id: "fbi-good-guys",
+    title: "Grew Up Thinking the FBI Were the Good Guys",
+    points: 5,
+    tags: ["culture", "collapse"],
+  },
+  {
+    id: "black-sites",
+    title: "You Know What Black Sites Are and Sleep Worse Because of It",
+    points: 7,
+    tags: ["culture", "collapse"],
+  },
+  {
+    id: "spiritual-awakening",
+    title: "Became Spiritually Awakened Through Mental Instability",
+    points: 6,
+    tags: ["health", "religion"],
+  },
+  {
+    id: "deleted-app-soul",
+    title: "Had to Delete an App to Save Your Soul",
+    points: 5,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "too-broken-to-work",
+    title: "Too Broken to Work but Too Broke to Rest",
+    points: 8,
+    tags: ["work", "health"],
+  },
+  {
+    id: "trauma-bond-ghosted",
+    title: "Trauma-Bonded and Then Ghosted",
+    points: 6,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "first-aware-trauma",
+    title: "First One in the Family to Notice Everyone Is Traumatized",
+    points: 7,
+    tags: ["family", "health"],
+  },
+  {
+    id: "phone-lifeline-abuser",
+    title: "Your Phone Is Your Lifeline and Your Abuser",
+    points: 6,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "betrayal-arc",
+    title: "Every Friend Group Has a Betrayal Arc",
+    points: 6,
+    tags: ["internet", "identity"],
+  },
+  { id: "self-aware", title: "At Least I'm Self-Aware", points: 4, tags: ["health"] },
+  {
+    id: "radicalized-fanfiction",
+    title: "Radicalized by Fanfiction",
+    points: 5,
+    tags: ["internet", "culture"],
+  },
+  {
+    id: "nun-monk-witch",
+    title: "Considered Becoming a Nun, Monk, Witch, or Cryptid",
+    points: 5,
+    tags: ["religion", "health"],
+  },
+  {
+    id: "war-crime-spite",
+    title: "Know Which War Crime You Would Commit Out of Spite",
+    points: 7,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "cried-during-meme",
+    title: "Cried During a Meme",
+    points: 4,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "recession-teen",
+    title: "Lived Through the Recession as a Teen",
+    points: 6,
+    tags: ["work", "culture"],
+  },
+  {
+    id: "covid-stole-event",
+    title: "COVID Stole Your Graduation, Wedding, or Funeral",
+    points: 8,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "simulation-glitching",
+    title: "The Simulation Is Glitching Again",
+    points: 5,
+    tags: ["collapse", "internet"],
+  },
+  {
+    id: "post-election-dread",
+    title: "Post-Election Dread",
+    points: 7,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "apocalyptic-dreams",
+    title: "Apocalyptic Dreams",
+    points: 6,
+    tags: ["collapse", "health"],
+  },
+  {
+    id: "city-never-masked",
+    title: "Lived in a City That Never Wore Masks During COVID",
+    points: 7,
+    tags: ["collapse", "culture"],
+  },
+  {
+    id: "dont-air-business",
+    title: "Family Had a Don't Air Our Business Rule",
+    points: 7,
+    tags: ["family", "culture"],
+  },
+  {
+    id: "explain-to-therapist",
+    title: "Had to Explain Everything to the Therapist",
+    points: 6,
+    tags: ["health", "culture"],
+  },
+  {
+    id: "interesting-pta",
+    title: "Interesting at PTA Meetings",
+    points: 5,
+    tags: ["family", "culture"],
+  },
+  {
+    id: "comfort-forensics",
+    title: "Comfort TV Is Forensic Documentaries",
+    points: 4,
+    tags: ["culture", "health"],
+  },
+  {
+    id: "memes-regulation",
+    title: "Memes as Emotional Regulation",
+    points: 5,
+    tags: ["internet", "health"],
+  },
+  {
+    id: "health-advice-tumblr",
+    title: "Got Health Advice from Tumblr and Never Recovered",
+    points: 6,
+    tags: ["internet", "health"],
+  },
+];
+
+const NPC_DATA_PATHS = {
+  decks: "./data/npc-decks.json",
+  dialogue: "./data/npc-dialogue.json",
+};
+
+const SETTINGS = {
+  maxRounds: 5,
+  duoHandSize: 10,
+  soloDeckSize: 40,
+  challengeUses: 3,
+  bullshitUses: 3,
+  defaultComputerOpponentKey: "walmart-karen",
+  computerOpponents: [
+    {
+      name: "Walmart Karen",
+      subtitle: "40-card random computer deck",
+      portraitSrc: "./Docs/UI Inspirations and References/Assets/Walmart Karen.png",
+      portraitAlt: "Walmart Karen portrait",
+    },
+    { name: "Mall Karen", subtitle: "40-card random computer deck" },
+    { name: "Officer Brady", subtitle: "40-card random computer deck" },
+    { name: "Sheriff Wright", subtitle: "40-card random computer deck" },
+    { name: "AI Support Unit", subtitle: "40-card random computer deck" },
+    { name: "The Doomscroll Oracle", subtitle: "40-card random computer deck" },
+  ],
+};
+
+// Export to window for vanilla JS compatibility
+window.TAGS = TAGS;
+window.CARD_POOL = CARD_POOL;
+window.NPC_DATA_PATHS = NPC_DATA_PATHS;
+window.SETTINGS = SETTINGS;
