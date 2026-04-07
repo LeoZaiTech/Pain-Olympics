@@ -1,0 +1,28 @@
+{
+  "walmart-karen": {
+    "preTaunts": [
+      "I already know I'm right, I just came over here so you could hear it.",
+      "If this round goes badly, I'm speaking to your manager!!!.",
+      "I brought coupons, a Facebook doctorate, and absolutely no self-awareness.",
+      "You look like the kind of person who thinks rules apply to everybody.",
+      "Don't make me go live about this.",
+      "I can turn one inconvenience into a civil-rights issue in under thirty seconds."
+    ],
+    "winLines": [
+      "See? Every time I ruin the vibe, I call it honesty.",
+      "That's what happens when you underestimate weaponized entitlement.",
+      "I didn't win, sweetheart. I was vindicated.",
+      "Put that in the incident report.",
+      "I hope this loss teaches you customer service.",
+      "You call it a tantrum. I call it community leadership."
+    ],
+    "lossLines": [
+      "Interesting. Corrupt judging. Very corrupt.",
+      "I'm not saying this was rigged, but I am saying I'm posting about it.",
+      "You didn't beat me. You manipulated the narrative.",
+      "That's fine. I'll remember your face and tell a completely different version later.",
+      "I'm calm. This is just what justice sounds like at full volume.",
+      "Enjoy your fake victory."
+    ]
+  }
+}

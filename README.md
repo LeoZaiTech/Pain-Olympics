@@ -72,6 +72,7 @@ The current prototype is a lightweight Node-powered web app with local JSON-back
 - [`README.md`](./README.md): current project snapshot
 - [`progress.md`](./progress.md): recent completed work and recommended next tasks
 - [`ARCHITECTURE.md`](./ARCHITECTURE.md): static vs dynamic HTML, render flow, how to add things
+- [`AGENTS.md`](./AGENTS.md): instructions for AI coding agents (Windsurf, Codex, Claude Code)
 - [`Starting Deck.md`](./Starting%20Deck.md): raw card and deck ideation
 - [`Brainstorming and Conceptualizing.md`](./Brainstorming%20and%20Conceptualizing.md): Q&A on tone, audience, rules, visual direction
 - [`Pain Olympics MVP Scope.md`](./Pain%20Olympics%20MVP%20Scope.md): original MVP scope and staged build plan
@@ -84,6 +85,7 @@ The current prototype is a lightweight Node-powered web app with local JSON-back
 - [`Docs/NPC Profiles/`](./Docs/NPC%20Profiles/): NPC design specs
 - [`Docs/UI Inspirations and References/`](./Docs/UI%20Inspirations%20and%20References/): visual references plus local prototype art assets
 - [`Docs/REACT_MIGRATION_PLAN.md`](./Docs/REACT_MIGRATION_PLAN.md): future React + Vite migration roadmap
+- [`Docs/AI_AGENT_SETUP.md`](./Docs/AI_AGENT_SETUP.md): AI workflow configuration and automation pipelines
 
 ## Run It
 
