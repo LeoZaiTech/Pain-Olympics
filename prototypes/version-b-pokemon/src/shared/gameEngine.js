@@ -60,6 +60,8 @@ export function createPlayer({ name, hand, isComputer = false, npcKey = '', port
   return {
     name,
     score: 0,
+    hp: 100,
+    maxHp: 100,
     hand,
     isComputer,
     npcKey,
@@ -104,17 +106,22 @@ export function finalizeRound(gs, winnerIndex) {
     ...players.map(p => p.selectedCardId),
     ...players.map(p => p.followUpCardId),
   ].filter(Boolean));
-  const newPlayers = players.map((p, i) => ({
-    ...p,
-    score: p.score + (i === winnerIndex ? pool : 0),
-    hand: p.hand.filter(c => !usedIds.has(c.id)),
-    selectedCardId: null,
-    followUpCardId: null,
-  }));
+  const newPlayers = players.map((p, i) => {
+    const isLoser = winnerIndex !== null && i !== winnerIndex;
+    return {
+      ...p,
+      score: p.score + (i === winnerIndex ? pool : 0),
+      hp: isLoser ? Math.max(0, p.hp - pool) : p.hp,
+      hand: p.hand.filter(c => !usedIds.has(c.id)),
+      selectedCardId: null,
+      followUpCardId: null,
+    };
+  });
+  const someoneKO = newPlayers.some(p => p.hp <= 0);
   return {
     ...gs,
     players: newPlayers,
-    phase: round >= maxRounds ? 'match-over' : 'resolved',
+    phase: someoneKO || round >= maxRounds ? 'match-over' : 'resolved',
     roundState: { ...roundState, poolPoints: pool, winnerIndex },
   };
 }

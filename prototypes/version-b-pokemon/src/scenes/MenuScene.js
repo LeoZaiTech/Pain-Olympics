@@ -53,7 +53,7 @@ export class MenuScene extends Phaser.Scene {
     const z     = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
     const space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    const go = () => this.scene.start('BattleScene');
+    const go = () => this.scene.start('DeckBuildScene');
     enter.once('down', go);
     z.once('down', go);
     space.once('down', go);

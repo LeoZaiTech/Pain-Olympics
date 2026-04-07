@@ -7,22 +7,48 @@ import { CARD_POOL, SETTINGS, tagLabel } from '../shared/data.js';
 
 // ── palette ──────────────────────────────────────────────────────────────────
 const C = {
-  DARKEST: 0x0F380F, DARK: 0x306230, MID: 0x8BAC0F, LIGHT: 0x9BBC0F,
-  WHITE: 0xF8F8F8,   HP_ON: 0xE84818,  HP_OFF: 0x4a2e20,
-  S_DARKEST: '#0F380F', S_LIGHT: '#9BBC0F', S_WHITE: '#F8F8F8', S_MID: '#8BAC0F',
+  // backgrounds
+  SKY:     0xE8F8D0,  // light mint sky
+  GROUND:  0x58A828,  // vibrant grass
+  GROUND2: 0x386020,  // dark grass
+  // platforms
+  PLAT:    0x204810,
+  // UI panels
+  WHITE:   0xF8F8F8,
+  BORDER:  0x202020,
+  DARK:    0x306230,
+  MID:     0x8BAC0F,
+  LIGHT:   0x9BBC0F,
+  // HP bar
+  HP_HI:   0x00B800,
+  HP_MID:  0xF8B800,
+  HP_LOW:  0xE82000,
+  HP_BG:   0x909090,
+  // token dots
+  CHAL_ON: 0xE84818,
+  BS_ON:   0x1a6bbf,
+  DOT_OFF: 0x909090,
+  // strings
+  S_DARK:    '#202020',
+  S_DARKEST: '#0F380F',
+  S_GREEN:   '#306230',
+  S_LIGHT:   '#9BBC0F',
+  S_WHITE:   '#F8F8F8',
+  S_MID:     '#8BAC0F',
+  S_GREY:    '#888888',
 };
 const FONT  = '"Press Start 2P", monospace';
 const W = 480, H = 320;
 // layout zones
-const DLG_Y = 230, DLG_H = 90;          // dialogue strip
-const ACT_X = 310, ACT_W = 168, ACT_H = DLG_H; // action menu (right half)
-const DLG_TXT_X = 10, DLG_TXT_W = 295;  // text zone (left half)
-const NPC_BOX  = { x: 6,   y: 8,   w: 210, h: 66 };
-const PLAY_BOX = { x: 260, y: 172, w: 214, h: 54 };
+const DLG_Y = 230, DLG_H = 90;
+const ACT_X = 310, ACT_W = 168, ACT_H = DLG_H;
+const DLG_TXT_X = 10, DLG_TXT_W = 295;
+const NPC_BOX  = { x: 6,   y: 8,   w: 210, h: 68 };
+const PLAY_BOX = { x: 260, y: 170, w: 214, h: 58 };
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function drawBox(gfx, x, y, w, h, fill, border) {
-  gfx.fillStyle(fill, 1);   gfx.fillRect(x, y, w, h);
+  gfx.fillStyle(fill, 1);    gfx.fillRect(x, y, w, h);
   gfx.lineStyle(3, border, 1); gfx.strokeRect(x, y, w, h);
 }
 
@@ -30,14 +56,14 @@ function drawBox(gfx, x, y, w, h, fill, border) {
 export class BattleScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BattleScene' });
-    this.gs          = null;   // game state
-    this.uiMode      = 'none'; // dialogue | action | card-pick | animating
-    this.dQueue      = [];     // pending dialogue lines
+    this.gs          = null;
+    this.uiMode      = 'none';
+    this.dQueue      = [];
     this.dTyping     = false;
-    this.dFull       = '';     // full current line
-    this.dShown      = '';     // chars shown so far
+    this.dFull       = '';
+    this.dShown      = '';
     this.dTimer      = null;
-    this.dCallback   = null;   // called after last line dismissed
+    this.dCallback   = null;
     this.actionIdx   = 0;
     this.actionOpts  = [];
     this.cardIdx     = 0;
@@ -60,14 +86,15 @@ export class BattleScene extends Phaser.Scene {
   }
 
   // ── lifecycle ───────────────────────────────────────────────────────────────
-  create() {
-    const npcDecks  = this.cache.json.get('npc-decks');
+  create(data) {
+    const npcDecks    = this.cache.json.get('npc-decks');
     const npcDialogue = this.cache.json.get('npc-dialogue');
     const extraCards  = Object.values(npcDecks).flatMap(p => p.exclusiveCards || []);
 
+    const playerDeck = data?.playerDeck || null;
     const human = createPlayer({
       name: 'YOU',
-      hand: buildRandomDeck(SETTINGS.soloDeckSize),
+      hand: playerDeck || buildRandomDeck(SETTINGS.soloDeckSize),
     });
     const npc = createPlayer({
       name: 'WALMART KAREN',
@@ -116,26 +143,26 @@ export class BattleScene extends Phaser.Scene {
   }
 
   _drawBackground() {
-    // sky
-    this.add.rectangle(0, 0,    W, 110, C.LIGHT).setOrigin(0, 0);
-    this.add.rectangle(0, 110,  W, 30,  C.MID).setOrigin(0, 0);
-    this.add.rectangle(0, 140,  W, 90,  C.DARKEST).setOrigin(0, 0);
+    // Light sky
+    this.add.rectangle(0, 0, W, 138, C.SKY).setOrigin(0, 0);
+    // Thin ground divider
+    this.add.rectangle(0, 138, W, 4, C.GROUND2).setOrigin(0, 0);
+    // Ground
+    this.add.rectangle(0, 142, W, 88, C.GROUND).setOrigin(0, 0);
     // NPC platform (upper right)
     const gp = this.add.graphics();
-    gp.fillStyle(C.DARK, 1); gp.fillEllipse(370, 118, 180, 22);
-    gp.fillStyle(C.DARKEST, 1); gp.fillRect(280, 118, 200, 8);
+    gp.fillStyle(C.GROUND2, 1); gp.fillEllipse(370, 118, 180, 22);
+    gp.fillStyle(C.PLAT, 1);    gp.fillRect(280, 118, 200, 8);
     // player platform (lower left)
-    gp.fillStyle(C.DARK, 1); gp.fillEllipse(100, 196, 140, 20);
-    gp.fillStyle(C.DARKEST, 1); gp.fillRect(30, 196, 150, 8);
+    gp.fillStyle(C.GROUND2, 1); gp.fillEllipse(100, 196, 140, 20);
+    gp.fillStyle(C.PLAT, 1);    gp.fillRect(30, 196, 150, 8);
   }
 
   _drawNpcSprite() {
-    // portrait frame
     const x = 308, y = 20, w = 110, h = 100;
     const g = this.add.graphics();
-    g.fillStyle(C.DARKEST, 1); g.fillRect(x - 2, y - 2, w + 4, h + 4);
+    g.fillStyle(C.BORDER, 1); g.fillRect(x - 2, y - 2, w + 4, h + 4);
     g.lineStyle(3, C.MID, 1);  g.strokeRect(x - 2, y - 2, w + 4, h + 4);
-    // portrait image
     const img = this.add.image(x, y, 'karen').setOrigin(0, 0);
     img.setDisplaySize(w, h);
   }
@@ -143,28 +170,30 @@ export class BattleScene extends Phaser.Scene {
   _drawPlayerSprite() {
     const g = this.add.graphics();
     const cx = 90, cy = 178;
-    // shadow
-    g.fillStyle(C.DARKEST, 0.6); g.fillEllipse(cx, cy + 12, 44, 8);
-    // legs
-    g.fillStyle(C.DARKEST, 1);
+    g.fillStyle(C.GROUND2, 0.6); g.fillEllipse(cx, cy + 12, 44, 8);
+    g.fillStyle(C.BORDER, 1);
     g.fillRect(cx - 14, cy - 2, 11, 16);
     g.fillRect(cx +  3, cy - 2, 11, 16);
-    // shoes
     g.fillStyle(C.MID, 1);
     g.fillRect(cx - 15, cy + 12, 13, 5);
     g.fillRect(cx +  2, cy + 12, 13, 5);
-    // torso
     g.fillStyle(C.DARK, 1); g.fillRect(cx - 16, cy - 22, 32, 22);
-    // arms
     g.fillStyle(C.MID, 1);
     g.fillRect(cx - 24, cy - 20, 10, 16);
     g.fillRect(cx + 14, cy - 20, 10, 16);
-    // head
     g.fillStyle(C.LIGHT, 1); g.fillRect(cx - 10, cy - 38, 20, 18);
-    // cap
-    g.fillStyle(C.DARKEST, 1);
+    g.fillStyle(C.BORDER, 1);
     g.fillRect(cx - 12, cy - 44, 24, 8);
     g.fillRect(cx - 10, cy - 38, 20, 4);
+  }
+
+  // ── HP bar helper ──────────────────────────────────────────────────────────
+  _drawHpBar(g, x, y, w, h, hp, maxHp) {
+    const pct   = Math.max(0, Math.min(1, hp / maxHp));
+    const color = pct > 0.5 ? C.HP_HI : pct > 0.25 ? C.HP_MID : C.HP_LOW;
+    g.fillStyle(C.HP_BG, 1); g.fillRect(x, y, w, h);
+    g.fillStyle(color, 1);   g.fillRect(x, y, Math.round(w * pct), h);
+    g.lineStyle(1, C.BORDER, 1); g.strokeRect(x, y, w, h);
   }
 
   // ── status boxes ──────────────────────────────────────────────────────────
@@ -173,46 +202,47 @@ export class BattleScene extends Phaser.Scene {
     g.clear();
     const [human, npc] = this.gs.players;
 
-    // NPC box (upper left)
-    drawBox(g, NPC_BOX.x, NPC_BOX.y, NPC_BOX.w, NPC_BOX.h, C.WHITE, C.DARKEST);
-    // Player box (lower right)
-    drawBox(g, PLAY_BOX.x, PLAY_BOX.y, PLAY_BOX.w, PLAY_BOX.h, C.WHITE, C.DARKEST);
+    drawBox(g, NPC_BOX.x,  NPC_BOX.y,  NPC_BOX.w,  NPC_BOX.h,  C.WHITE, C.BORDER);
+    drawBox(g, PLAY_BOX.x, PLAY_BOX.y, PLAY_BOX.w, PLAY_BOX.h, C.WHITE, C.BORDER);
 
-    // dots helper
+    // HP bars
+    const BAR_W = 118;
+    this._drawHpBar(g, NPC_BOX.x  + 8,  NPC_BOX.y  + 30, BAR_W, 6, npc.hp,   npc.maxHp);
+    this._drawHpBar(g, PLAY_BOX.x + 8,  PLAY_BOX.y + 28, BAR_W, 6, human.hp, human.maxHp);
+
+    // Token dots
     const dot = (bx, by, total, remaining, color) => {
       for (let i = 0; i < total; i++) {
-        g.fillStyle(i < remaining ? color : C.HP_OFF, 1);
-        g.fillCircle(bx + i * 12, by, 4);
+        g.fillStyle(i < remaining ? color : C.DOT_OFF, 1);
+        g.fillCircle(bx + i * 10, by, 3);
       }
     };
+    dot(NPC_BOX.x  + 8,  NPC_BOX.y  + 48, 3, npc.challengesLeft,   C.CHAL_ON);
+    dot(NPC_BOX.x  + 8,  NPC_BOX.y  + 60, 3, npc.bullshitLeft,      C.BS_ON);
+    dot(PLAY_BOX.x + 8,  PLAY_BOX.y + 44, 3, human.challengesLeft,  C.CHAL_ON);
+    dot(PLAY_BOX.x + 8,  PLAY_BOX.y + 52, 3, human.bullshitLeft,     C.BS_ON);
 
-    // NPC dots
-    dot(NPC_BOX.x + 10, NPC_BOX.y + 38, 3, npc.challengesLeft,  C.HP_ON);
-    dot(NPC_BOX.x + 10, NPC_BOX.y + 54, 3, npc.bullshitLeft,     0x1a6bbf);
-
-    // Player dots
-    dot(PLAY_BOX.x + 10, PLAY_BOX.y + 26, 3, human.challengesLeft, C.HP_ON);
-    dot(PLAY_BOX.x + 10, PLAY_BOX.y + 42, 3, human.bullshitLeft,    0x1a6bbf);
-
-    // Render names & scores via text objects (destroy old ones first)
     if (this._statusTexts) this._statusTexts.forEach(t => t.destroy());
     this._statusTexts = [];
-    const st = (x, y, txt, size = '7px', col = C.S_DARKEST) => {
+    const st = (x, y, txt, size = '7px', col = C.S_DARK) => {
       const t = this.add.text(x, y, txt, { fontFamily: FONT, fontSize: size, color: col }).setDepth(4);
       this._statusTexts.push(t);
       return t;
     };
 
-    const npcName = npc.name.length > 12 ? npc.name.slice(0, 12) : npc.name;
-    st(NPC_BOX.x + 6,  NPC_BOX.y + 6,  npcName, '7px');
-    st(NPC_BOX.x + 6,  NPC_BOX.y + 20, `PTS:${npc.score}`, '6px', '#306230');
-    st(NPC_BOX.x + 50, NPC_BOX.y + 33, 'CHAL', '5px', C.S_DARKEST);
-    st(NPC_BOX.x + 50, NPC_BOX.y + 49, 'BS', '5px', '#1a6bbf');
+    // NPC box — full name, no truncation
+    st(NPC_BOX.x + 6,  NPC_BOX.y + 5,  npc.name, '6px');
+    st(NPC_BOX.x + 6,  NPC_BOX.y + 18, 'HP', '5px', C.S_GREEN);
+    st(NPC_BOX.x + 140, NPC_BOX.y + 18, `${npc.hp}/${npc.maxHp}`, '5px', C.S_GREEN);
+    st(NPC_BOX.x + 44, NPC_BOX.y + 43, 'CHAL', '5px', C.S_DARK);
+    st(NPC_BOX.x + 44, NPC_BOX.y + 55, 'BS', '5px', '#1a6bbf');
 
-    st(PLAY_BOX.x + 6,  PLAY_BOX.y + 6,  'YOU', '7px');
-    st(PLAY_BOX.x + 6,  PLAY_BOX.y + 18, `PTS:${human.score}`, '6px', '#306230');
-    st(PLAY_BOX.x + 50, PLAY_BOX.y + 21, 'CHAL', '5px', C.S_DARKEST);
-    st(PLAY_BOX.x + 50, PLAY_BOX.y + 37, 'BS', '5px', '#1a6bbf');
+    // Player box
+    st(PLAY_BOX.x + 6,  PLAY_BOX.y + 5,  'YOU', '7px');
+    st(PLAY_BOX.x + 6,  PLAY_BOX.y + 17, 'HP', '5px', C.S_GREEN);
+    st(PLAY_BOX.x + 140, PLAY_BOX.y + 17, `${human.hp}/${human.maxHp}`, '5px', C.S_GREEN);
+    st(PLAY_BOX.x + 44, PLAY_BOX.y + 39, 'CHAL', '5px', C.S_DARK);
+    st(PLAY_BOX.x + 44, PLAY_BOX.y + 47, 'BS', '5px', '#1a6bbf');
   }
 
   // ── dialogue box ──────────────────────────────────────────────────────────
@@ -220,11 +250,11 @@ export class BattleScene extends Phaser.Scene {
     this.dlgGfx = this.add.graphics().setDepth(8);
     this._drawDlgBox();
     this.dlgText = this.add.text(DLG_TXT_X + 4, DLG_Y + 8, '', {
-      fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST,
+      fontFamily: FONT, fontSize: '8px', color: C.S_DARK,
       wordWrap: { width: DLG_TXT_W - 8 }, lineSpacing: 6,
     }).setDepth(10);
     this.dlgArrow = this.add.text(DLG_TXT_X + DLG_TXT_W - 12, DLG_Y + DLG_H - 14, '▼', {
-      fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST,
+      fontFamily: FONT, fontSize: '8px', color: C.S_DARK,
     }).setDepth(10).setVisible(false);
     this.time.addEvent({ delay: 400, loop: true, callback: () => {
       if (this.dlgArrow.visible) this.dlgArrow.setAlpha(this.dlgArrow.alpha === 1 ? 0.2 : 1);
@@ -234,35 +264,41 @@ export class BattleScene extends Phaser.Scene {
   _drawDlgBox() {
     const g = this.dlgGfx;
     g.clear();
-    drawBox(g, 2, DLG_Y, W - 4, DLG_H, C.WHITE, C.DARKEST);
-    // vertical divider for action menu
-    g.lineStyle(2, C.DARKEST, 1);
+    drawBox(g, 2, DLG_Y, W - 4, DLG_H, C.WHITE, C.BORDER);
+    g.lineStyle(2, C.BORDER, 1);
     g.lineBetween(ACT_X - 2, DLG_Y + 4, ACT_X - 2, DLG_Y + DLG_H - 4);
   }
 
   // ── action menu ───────────────────────────────────────────────────────────
   _buildActionMenu() {
-    this.actGfx = this.add.graphics().setDepth(9);
+    this.actGfx  = this.add.graphics().setDepth(9);
     this.actTexts = [];
     for (let i = 0; i < 4; i++) {
       this.actTexts.push(
-        this.add.text(ACT_X + 20, DLG_Y + 10 + i * 18, '', {
-          fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST,
+        this.add.text(ACT_X + 20, DLG_Y + 10 + i * 20, '', {
+          fontFamily: FONT, fontSize: '7px', color: C.S_DARK,
         }).setDepth(11).setVisible(false)
       );
     }
     this._actCursor = this.add.text(ACT_X + 6, DLG_Y + 10, '▶', {
-      fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST,
+      fontFamily: FONT, fontSize: '7px', color: C.S_DARK,
     }).setDepth(12).setVisible(false);
   }
 
   _showActionMenu(opts) {
-    this.uiMode     = 'action';
+    this.uiMode    = 'action';
     this.actionOpts = opts;
-    this.actionIdx  = 0;
+    // start cursor on first non-disabled option
+    this.actionIdx = opts.findIndex(o => !o.disabled);
+    if (this.actionIdx === -1) this.actionIdx = 0;
     this.actTexts.forEach((t, i) => {
-      if (i < opts.length) { t.setText(opts[i].label).setVisible(true); }
-      else                 { t.setVisible(false); }
+      if (i < opts.length) {
+        t.setText(opts[i].label)
+         .setColor(opts[i].disabled ? C.S_GREY : C.S_DARK)
+         .setVisible(true);
+      } else {
+        t.setVisible(false);
+      }
     });
     this._actCursor.setVisible(true);
     this._refreshActionCursor();
@@ -274,58 +310,54 @@ export class BattleScene extends Phaser.Scene {
   }
 
   _refreshActionCursor() {
-    this._actCursor.setY(DLG_Y + 10 + this.actionIdx * 18);
+    this._actCursor.setY(DLG_Y + 10 + this.actionIdx * 20);
   }
 
   // ── card pick panel ──────────────────────────────────────────────────────
   _buildCardPanel() {
     this.cardPanel = this.add.graphics().setDepth(20).setVisible(false);
     this.cardTexts = [];
-    // header
     this._cpHeader = this.add.text(W / 2, 8, '', {
       fontFamily: FONT, fontSize: '7px', color: C.S_LIGHT,
     }).setOrigin(0.5, 0).setDepth(22).setVisible(false);
-    // row texts
     for (let i = 0; i < this.VISIBLE_CARDS; i++) {
       const row = this.add.text(16, 28 + i * 34, '', {
-        fontFamily: FONT, fontSize: '7px', color: C.S_DARKEST,
+        fontFamily: FONT, fontSize: '7px', color: C.S_DARK,
         wordWrap: { width: W - 100 },
       }).setDepth(22).setVisible(false);
       const pts = this.add.text(W - 52, 28 + i * 34, '', {
-        fontFamily: FONT, fontSize: '7px', color: C.S_DARKEST,
+        fontFamily: FONT, fontSize: '7px', color: C.S_DARK,
       }).setDepth(22).setVisible(false);
       const tag = this.add.text(W - 52, 28 + i * 34 + 12, '', {
-        fontFamily: FONT, fontSize: '5px', color: '#306230',
+        fontFamily: FONT, fontSize: '5px', color: C.S_GREEN,
       }).setDepth(22).setVisible(false);
       this.cardTexts.push({ row, pts, tag });
     }
     this._cpHint = this.add.text(W / 2, H - 8, '↑↓ MOVE   Z/ENTER SELECT   X/ESC CANCEL', {
-      fontFamily: FONT, fontSize: '5px', color: '#306230',
+      fontFamily: FONT, fontSize: '5px', color: C.S_GREEN,
     }).setOrigin(0.5, 1).setDepth(22).setVisible(false);
     this._cpCursor = this.add.text(6, 28, '▶', {
-      fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST,
+      fontFamily: FONT, fontSize: '8px', color: C.S_DARK,
     }).setDepth(23).setVisible(false);
   }
 
   _showCardPicker(hand, title, onSelect, onCancel) {
-    this.uiMode    = 'card-pick';
-    this.cardHand  = hand;
-    this.cardDone  = onSelect;
+    this.uiMode     = 'card-pick';
+    this.cardHand   = hand;
+    this.cardDone   = onSelect;
     this.cardCancel = onCancel || null;
-    this.cardIdx   = 0;
+    this.cardIdx    = 0;
     this.cardScroll = 0;
 
     const g = this.cardPanel;
     g.clear();
     g.fillStyle(C.WHITE, 1); g.fillRect(0, 0, W, H);
-    g.lineStyle(3, C.DARKEST, 1); g.strokeRect(2, 2, W - 4, H - 4);
-    g.fillStyle(C.DARKEST, 1); g.fillRect(0, 0, W, 22);
-    // row dividers
+    g.lineStyle(3, C.BORDER, 1); g.strokeRect(2, 2, W - 4, H - 4);
+    g.fillStyle(C.BORDER, 1); g.fillRect(0, 0, W, 22);
     for (let i = 0; i <= this.VISIBLE_CARDS; i++) {
       g.lineStyle(1, C.MID, 0.5); g.lineBetween(8, 22 + i * 34, W - 8, 22 + i * 34);
     }
     g.setVisible(true);
-
     this._cpHeader.setText(title).setVisible(true);
     this._cpHint.setVisible(true);
     this._cpCursor.setVisible(true);
@@ -351,7 +383,6 @@ export class BattleScene extends Phaser.Scene {
       pts.setText(`${card.points}pt`);
       tag.setText(tagLabel(card.tags[0] || '').toUpperCase().slice(0, 10));
     });
-    // blank unused rows
     for (let i = visible.length; i < this.VISIBLE_CARDS; i++) {
       const { row, pts, tag } = this.cardTexts[i];
       row.setText(''); pts.setText(''); tag.setText('');
@@ -365,11 +396,11 @@ export class BattleScene extends Phaser.Scene {
     this.playedGfx = this.add.graphics().setDepth(6);
     this.playedTexts = {
       label0: this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '6px', color: C.S_LIGHT }).setDepth(7).setVisible(false),
-      card0:  this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '7px', color: C.S_DARKEST, wordWrap: { width: 110 } }).setDepth(7).setVisible(false),
-      pts0:   this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST }).setDepth(7).setVisible(false),
+      card0:  this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '7px', color: C.S_DARK, wordWrap: { width: 110 } }).setDepth(7).setVisible(false),
+      pts0:   this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '8px', color: C.S_DARK }).setDepth(7).setVisible(false),
       label1: this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '6px', color: C.S_LIGHT }).setDepth(7).setVisible(false),
-      card1:  this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '7px', color: C.S_DARKEST, wordWrap: { width: 110 } }).setDepth(7).setVisible(false),
-      pts1:   this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '8px', color: C.S_DARKEST }).setDepth(7).setVisible(false),
+      card1:  this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '7px', color: C.S_DARK, wordWrap: { width: 110 } }).setDepth(7).setVisible(false),
+      pts1:   this.add.text(0, 0, '', { fontFamily: FONT, fontSize: '8px', color: C.S_DARK }).setDepth(7).setVisible(false),
       vs:     this.add.text(W / 2, 158, 'VS', { fontFamily: FONT, fontSize: '10px', color: C.S_LIGHT }).setOrigin(0.5).setDepth(7).setVisible(false),
     };
   }
@@ -382,17 +413,15 @@ export class BattleScene extends Phaser.Scene {
     const g = this.playedGfx;
     g.clear();
 
-    // player card (left)
     if (c0) {
-      drawBox(g, 20, 138, 120, 80, C.WHITE, C.DARKEST);
-      this.playedTexts.label0.setPosition(24, 140).setText(human.name.slice(0,8)).setVisible(true);
+      drawBox(g, 20, 138, 120, 80, C.WHITE, C.BORDER);
+      this.playedTexts.label0.setPosition(24, 140).setText(human.name.slice(0, 8)).setVisible(true);
       this.playedTexts.card0.setPosition(24, 154).setText(c0.title).setVisible(true);
       this.playedTexts.pts0.setPosition(24, 196).setText(`${c0.points} pts`).setVisible(true);
     }
-    // npc card (right)
     if (c1) {
-      drawBox(g, W - 140, 138, 120, 80, C.WHITE, C.DARKEST);
-      this.playedTexts.label1.setPosition(W - 136, 140).setText(npc.name.slice(0,8)).setVisible(true);
+      drawBox(g, W - 140, 138, 120, 80, C.WHITE, C.BORDER);
+      this.playedTexts.label1.setPosition(W - 136, 140).setText(npc.name.slice(0, 8)).setVisible(true);
       this.playedTexts.card1.setPosition(W - 136, 154).setText(c1.title).setVisible(true);
       this.playedTexts.pts1.setPosition(W - 136, 196).setText(`${c1.points} pts`).setVisible(true);
     }
@@ -434,12 +463,8 @@ export class BattleScene extends Phaser.Scene {
         this.dlgText.setText(this.dShown);
         if (i >= line.length) {
           this.dTyping = false;
-          if (this.dQueue.length) { this.dlgArrow.setVisible(true); }
-          else {
-            // if no more lines, show arrow only when waiting for callback
-            if (this.dCallback) this.dlgArrow.setVisible(true);
-            else { this.dlgArrow.setVisible(false); }
-          }
+          if (this.dQueue.length || this.dCallback) this.dlgArrow.setVisible(true);
+          else this.dlgArrow.setVisible(false);
         }
       },
     });
@@ -463,11 +488,12 @@ export class BattleScene extends Phaser.Scene {
       z:     this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
       x:     this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
       esc:   this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
+      space: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
     };
   }
 
   _just(key) { return Phaser.Input.Keyboard.JustDown(this.keys[key]); }
-  _confirm() { return this._just('enter') || this._just('z'); }
+  _confirm() { return this._just('enter') || this._just('z') || this._just('space'); }
   _cancel()  { return this._just('esc')   || this._just('x'); }
 
   _inputDialogue() {
@@ -480,12 +506,26 @@ export class BattleScene extends Phaser.Scene {
 
   _inputAction() {
     const opts = this.actionOpts;
-    if (this._just('up'))   { this.actionIdx = (this.actionIdx - 1 + opts.length) % opts.length; this._refreshActionCursor(); }
-    if (this._just('down')) { this.actionIdx = (this.actionIdx + 1) % opts.length; this._refreshActionCursor(); }
+    if (this._just('up')) {
+      let idx = (this.actionIdx - 1 + opts.length) % opts.length;
+      let tries = opts.length;
+      while (opts[idx]?.disabled && tries-- > 0) idx = (idx - 1 + opts.length) % opts.length;
+      this.actionIdx = idx;
+      this._refreshActionCursor();
+    }
+    if (this._just('down')) {
+      let idx = (this.actionIdx + 1) % opts.length;
+      let tries = opts.length;
+      while (opts[idx]?.disabled && tries-- > 0) idx = (idx + 1) % opts.length;
+      this.actionIdx = idx;
+      this._refreshActionCursor();
+    }
     if (this._confirm()) {
       const chosen = opts[this.actionIdx];
-      this._hideActionMenu();
-      if (chosen?.action) chosen.action();
+      if (!chosen?.disabled) {
+        this._hideActionMenu();
+        if (chosen?.action) chosen.action();
+      }
     }
   }
 
@@ -535,9 +575,12 @@ export class BattleScene extends Phaser.Scene {
   _doSelecting() {
     this._hidePlayedCards();
     this._updateRoundLabel();
+    const [human] = this.gs.players;
     const opts = [
-      { label: 'FIGHT',   action: () => this._pickCard('primary') },
-      { label: 'FORFEIT', action: () => this._goToMenu() },
+      { label: 'FIGHT',                          action: () => this._pickCard('primary') },
+      { label: `CHALLENGE ${human.challengesLeft}/3`, disabled: true },
+      { label: `CALL BS ${human.bullshitLeft}/3`,    disabled: true },
+      { label: 'FORFEIT',                         action: () => this._goToMenu() },
     ];
     this.say(['What will you do?'], () => this._showActionMenu(opts));
   }
@@ -558,7 +601,6 @@ export class BattleScene extends Phaser.Scene {
   }
 
   _afterHumanPrimary(humanCard) {
-    // NPC picks
     this.gs.players[1] = chooseComputerCard(this.gs.players[1], 'primary');
     this.say([`${this.gs.players[1].name} locked in a card.`], () => {
       this.gs = lockIn(this.gs);
@@ -576,19 +618,22 @@ export class BattleScene extends Phaser.Scene {
     if (defWin === null) {
       lines.push("It's a tie! Follow-up cards required.");
     } else {
-      const leader = this.gs.players[defWin].name;
-      lines.push(`${leader} leads by default!`);
+      lines.push(`${this.gs.players[defWin].name} leads by default!`);
     }
+
     this.say(lines, () => {
       if (defWin === null) {
         this._doTiebreak();
       } else {
-        const canChallenge = human.challengesLeft > 0;
-        const canBS        = human.bullshitLeft   > 0;
         const opts = [
-          { label: 'ACCEPT',    action: () => this._resolveWith(defWin) },
-          ...(canChallenge ? [{ label: 'CHALLENGE', action: () => this._dispute('challenge') }] : []),
-          ...(canBS        ? [{ label: 'CALL  BS',  action: () => this._dispute('bullshit')  }] : []),
+          { label: 'ACCEPT',                           action: () => this._resolveWith(defWin) },
+          { label: `CHALLENGE ${human.challengesLeft}/3`,
+            action: human.challengesLeft > 0 ? () => this._dispute('challenge') : null,
+            disabled: human.challengesLeft <= 0 },
+          { label: `CALL BS ${human.bullshitLeft}/3`,
+            action: human.bullshitLeft > 0 ? () => this._dispute('bullshit') : null,
+            disabled: human.bullshitLeft <= 0 },
+          { label: 'FORFEIT',                          action: () => this._goToMenu() },
         ];
         this._showActionMenu(opts);
       }
@@ -628,10 +673,12 @@ export class BattleScene extends Phaser.Scene {
     const npc = this.gs.players[1];
     let resultLine;
     if (winnerIndex === null) {
-      resultLine = `Stalemate! Nobody scores.`;
+      resultLine = `Stalemate! No damage dealt.`;
     } else {
       const winner = before.players[winnerIndex];
-      resultLine = `${winner.name} takes ${poolPoints} pts!`;
+      const loserIdx = 1 - winnerIndex;
+      const loserHp  = this.gs.players[loserIdx].hp;
+      resultLine = `${winner.name} deals ${poolPoints} damage! (${loserHp} HP left)`;
     }
     const reactionKey = winnerIndex === 1 ? 'winLines' : 'lossLines';
     const reaction = pickNpcLine(this.gs.npcDialogue, npc.npcKey, reactionKey);
@@ -653,9 +700,9 @@ export class BattleScene extends Phaser.Scene {
     this._hidePlayedCards();
     const [human, npc] = this.gs.players;
     let outcome;
-    if (human.score > npc.score)       outcome = `YOU WIN!  ${human.score}-${npc.score}`;
-    else if (npc.score > human.score)   outcome = `${npc.name} WINS  ${npc.score}-${human.score}`;
-    else                                outcome = `DRAW!  ${human.score}-${npc.score}`;
+    if (human.hp > npc.hp)       outcome = `YOU WIN!  ${human.hp}-${npc.hp} HP`;
+    else if (npc.hp > human.hp)   outcome = `${npc.name} WINS  ${npc.hp}-${human.hp}`;
+    else                          outcome = `DRAW!  ${human.hp}-${npc.hp} HP`;
 
     this.say(
       ['MATCH OVER!', outcome, 'Thanks for playing.'],
