@@ -99,7 +99,7 @@ export function lockIn(gs) {
 }
 
 export function finalizeRound(gs, winnerIndex) {
-  const { players, round, maxRounds, roundState } = gs;
+  const { players, round, roundState } = gs;
   const allCommitted = [...roundState.primarySelections, ...roundState.followUpSelections].filter(Boolean);
   const pool = allCommitted.reduce((t, c) => t + (c?.points || 0), 0);
   const usedIds = new Set([
@@ -121,7 +121,7 @@ export function finalizeRound(gs, winnerIndex) {
   return {
     ...gs,
     players: newPlayers,
-    phase: someoneKO || round >= maxRounds ? 'match-over' : 'resolved',
+    phase: someoneKO ? 'match-over' : 'resolved',
     roundState: { ...roundState, poolPoints: pool, winnerIndex },
   };
 }

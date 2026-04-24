@@ -43,8 +43,8 @@ const W = 480, H = 320;
 const DLG_Y = 230, DLG_H = 90;
 const ACT_X = 310, ACT_W = 168, ACT_H = DLG_H;
 const DLG_TXT_X = 10, DLG_TXT_W = 295;
-const NPC_BOX  = { x: 6,   y: 8,   w: 210, h: 68 };
-const PLAY_BOX = { x: 260, y: 170, w: 214, h: 58 };
+const NPC_BOX  = { x: 6,   y: 8,   w: 210, h: 44 };
+const PLAY_BOX = { x: 260, y: 178, w: 214, h: 44 };
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function drawBox(gfx, x, y, w, h, fill, border) {
@@ -206,21 +206,9 @@ export class BattleScene extends Phaser.Scene {
     drawBox(g, PLAY_BOX.x, PLAY_BOX.y, PLAY_BOX.w, PLAY_BOX.h, C.WHITE, C.BORDER);
 
     // HP bars
-    const BAR_W = 118;
-    this._drawHpBar(g, NPC_BOX.x  + 8,  NPC_BOX.y  + 30, BAR_W, 6, npc.hp,   npc.maxHp);
-    this._drawHpBar(g, PLAY_BOX.x + 8,  PLAY_BOX.y + 28, BAR_W, 6, human.hp, human.maxHp);
-
-    // Token dots
-    const dot = (bx, by, total, remaining, color) => {
-      for (let i = 0; i < total; i++) {
-        g.fillStyle(i < remaining ? color : C.DOT_OFF, 1);
-        g.fillCircle(bx + i * 10, by, 3);
-      }
-    };
-    dot(NPC_BOX.x  + 8,  NPC_BOX.y  + 48, 3, npc.challengesLeft,   C.CHAL_ON);
-    dot(NPC_BOX.x  + 8,  NPC_BOX.y  + 60, 3, npc.bullshitLeft,      C.BS_ON);
-    dot(PLAY_BOX.x + 8,  PLAY_BOX.y + 44, 3, human.challengesLeft,  C.CHAL_ON);
-    dot(PLAY_BOX.x + 8,  PLAY_BOX.y + 52, 3, human.bullshitLeft,     C.BS_ON);
+    const BAR_W = 150;
+    this._drawHpBar(g, NPC_BOX.x  + 8,  NPC_BOX.y  + 30, BAR_W, 7, npc.hp,   npc.maxHp);
+    this._drawHpBar(g, PLAY_BOX.x + 8,  PLAY_BOX.y + 30, BAR_W, 7, human.hp, human.maxHp);
 
     if (this._statusTexts) this._statusTexts.forEach(t => t.destroy());
     this._statusTexts = [];
@@ -230,19 +218,15 @@ export class BattleScene extends Phaser.Scene {
       return t;
     };
 
-    // NPC box — full name, no truncation
-    st(NPC_BOX.x + 6,  NPC_BOX.y + 5,  npc.name, '6px');
-    st(NPC_BOX.x + 6,  NPC_BOX.y + 18, 'HP', '5px', C.S_GREEN);
-    st(NPC_BOX.x + 140, NPC_BOX.y + 18, `${npc.hp}/${npc.maxHp}`, '5px', C.S_GREEN);
-    st(NPC_BOX.x + 44, NPC_BOX.y + 43, 'CHAL', '5px', C.S_DARK);
-    st(NPC_BOX.x + 44, NPC_BOX.y + 55, 'BS', '5px', '#1a6bbf');
+    // NPC box — full name, HP only
+    st(NPC_BOX.x + 6,   NPC_BOX.y + 5,  npc.name, '6px');
+    st(NPC_BOX.x + 6,   NPC_BOX.y + 18, 'HP', '5px', C.S_GREEN);
+    st(NPC_BOX.x + 168, NPC_BOX.y + 18, `${npc.hp}/${npc.maxHp}`, '5px', C.S_GREEN);
 
-    // Player box
-    st(PLAY_BOX.x + 6,  PLAY_BOX.y + 5,  'YOU', '7px');
-    st(PLAY_BOX.x + 6,  PLAY_BOX.y + 17, 'HP', '5px', C.S_GREEN);
-    st(PLAY_BOX.x + 140, PLAY_BOX.y + 17, `${human.hp}/${human.maxHp}`, '5px', C.S_GREEN);
-    st(PLAY_BOX.x + 44, PLAY_BOX.y + 39, 'CHAL', '5px', C.S_DARK);
-    st(PLAY_BOX.x + 44, PLAY_BOX.y + 47, 'BS', '5px', '#1a6bbf');
+    // Player box — HP only
+    st(PLAY_BOX.x + 6,   PLAY_BOX.y + 5,  'YOU', '7px');
+    st(PLAY_BOX.x + 6,   PLAY_BOX.y + 18, 'HP', '5px', C.S_GREEN);
+    st(PLAY_BOX.x + 168, PLAY_BOX.y + 18, `${human.hp}/${human.maxHp}`, '5px', C.S_GREEN);
   }
 
   // ── dialogue box ──────────────────────────────────────────────────────────
@@ -323,7 +307,7 @@ export class BattleScene extends Phaser.Scene {
     for (let i = 0; i < this.VISIBLE_CARDS; i++) {
       const row = this.add.text(16, 28 + i * 34, '', {
         fontFamily: FONT, fontSize: '7px', color: C.S_DARK,
-        wordWrap: { width: W - 100 },
+        wordWrap: { width: W - 72 },
       }).setDepth(22).setVisible(false);
       const pts = this.add.text(W - 52, 28 + i * 34, '', {
         fontFamily: FONT, fontSize: '7px', color: C.S_DARK,
@@ -377,9 +361,7 @@ export class BattleScene extends Phaser.Scene {
     const visible = this.cardHand.slice(this.cardScroll, this.cardScroll + this.VISIBLE_CARDS);
     visible.forEach((card, i) => {
       const { row, pts, tag } = this.cardTexts[i];
-      const maxLen = 30;
-      const title  = card.title.length > maxLen ? card.title.slice(0, maxLen) + '…' : card.title;
-      row.setText(title);
+      row.setText(card.title);
       pts.setText(`${card.points}pt`);
       tag.setText(tagLabel(card.tags[0] || '').toUpperCase().slice(0, 10));
     });
@@ -558,7 +540,7 @@ export class BattleScene extends Phaser.Scene {
 
   // ── round label ──────────────────────────────────────────────────────────
   _updateRoundLabel() {
-    this.roundLabel.setText(`ROUND ${this.gs.round}/${this.gs.maxRounds}`);
+    this.roundLabel.setText(`ROUND ${this.gs.round}`);
   }
 
   // ── battle flow ──────────────────────────────────────────────────────────

@@ -4,49 +4,35 @@
     "subtitle": "Grievance-maxed store warrior",
     "portraitSrc": "./Docs/UI Inspirations and References/Assets/Walmart Karen.png",
     "baseCardIds": [
-      "news-propaganda",
-      "fbi-good-guys",
       "black-sites",
       "aliens-abduct",
-      "matrix-too-young",
       "war-crime-spite",
-      "covid-stole-event",
-      "simulation-glitching",
-      "post-election-dread",
-      "apocalyptic-dreams",
-      "city-never-masked",
       "interesting-pta"
     ],
     "exclusiveCards": [
       {
-        "id": "asked-manager-before-reading-sign",
-        "title": "Asked for the Manager Before Reading the Sign",
+        "id": "asked-manager-didnt-get-one",
+        "title": "Asked for the Manager and Didn't Get One",
         "points": 5,
         "tags": ["work", "culture"]
       },
       {
-        "id": "store-policy-hate-crime",
-        "title": "Treats Store Policy Like a Hate Crime",
-        "points": 7,
-        "tags": ["culture", "identity"]
-      },
-      {
-        "id": "facebook-university-graduate",
-        "title": "Facebook University Graduate",
+        "id": "manager-wouldnt-honor-coupons",
+        "title": "Manager Wouldn't Honor My Coupons",
         "points": 5,
-        "tags": ["internet", "culture"]
-      },
-      {
-        "id": "coupon-combat-veteran",
-        "title": "Coupon Combat Veteran",
-        "points": 4,
         "tags": ["work", "culture"]
       },
       {
-        "id": "i-pay-your-salary-spell",
-        "title": "Says \"I Pay Your Salary\" Like a Spell",
+        "id": "gawdamn-manager-didnt-fix-shit",
+        "title": "Gawdamn Manager Didn't Fix Sh*t",
         "points": 6,
         "tags": ["work", "culture"]
+      },
+      {
+        "id": "victimized-by-store-policy",
+        "title": "Victimized by Store Policy Change",
+        "points": 4,
+        "tags": ["culture", "identity"]
       },
       {
         "id": "called-corporate-over-pride-flag",
@@ -55,25 +41,13 @@
         "tags": ["culture", "identity"]
       },
       {
-        "id": "mispronounced-it-on-purpose",
-        "title": "Mispronounced It on Purpose",
-        "points": 7,
-        "tags": ["identity", "culture"]
-      },
-      {
-        "id": "confuses-feared-with-respected",
-        "title": "Confuses Being Feared with Being Respected",
-        "points": 6,
-        "tags": ["identity", "culture"]
-      },
-      {
-        "id": "sent-my-child-to-buy-my-cigarettes",
-        "title": "Sent My Child to Buy My Cigarettes",
-        "points": 6,
+        "id": "sent-child-buy-cigarettes-cashier",
+        "title": "Sent My Child to Buy My Cigarettes and the Cashier Wouldn't Let Em Buy Em",
+        "points": 4,
         "tags": ["family", "work"]
       },
       {
-        "id": "got-cancer-from-chain-smoking-in-the-house",
+        "id": "got-cancer-chain-smoking",
         "title": "Got Cancer from Chain-Smoking in the House",
         "points": 7,
         "tags": ["health", "family"]
@@ -119,13 +93,43 @@
         "title": "Can't Drink My Mountain Dew No More Cause I Got Diabeetus",
         "points": 6,
         "tags": ["health", "culture"]
+      },
+      {
+        "id": "went-negatively-viral-screaming-17yo",
+        "title": "Went Negatively Viral for Screaming at a 17-Year-Old Who Deserved It",
+        "points": 6,
+        "tags": ["internet", "identity"]
+      },
+      {
+        "id": "called-corporate-three-times-no-manager",
+        "title": "Called Corporate Three Times in One Day and Never Got a Manager",
+        "points": 6,
+        "tags": ["work", "culture"]
+      },
+      {
+        "id": "filed-police-report-neighborhood-children",
+        "title": "Filed a Police Report About Neighborhood Children",
+        "points": 7,
+        "tags": ["culture", "collapse"]
+      },
+      {
+        "id": "three-ex-husbands-one-restraining-order-no-alimony",
+        "title": "Three Ex-Husbands, One Restraining Order, No Alimony",
+        "points": 7,
+        "tags": ["family", "work"]
+      },
+      {
+        "id": "filmed-without-permission-now-a-meme",
+        "title": "Got Filmed Without Permission and Now I'm a Meme",
+        "points": 8,
+        "tags": ["internet", "identity"]
       }
     ],
     "designNotes": [
       "Satirize grievance behavior, public humiliation, and conspiratorial victimhood.",
       "Keep the voice memeable and quotable without relying on slurs.",
       "Let part of the humor come from things the character wrongly experiences as persecution.",
-      "Treat this as a growing character pack built from 12 main-pool pulls plus Karen-exclusive cards."
+      "Treat this as a growing character pack built from 4 main-pool pulls plus Karen-exclusive cards."
     ]
   }
 }

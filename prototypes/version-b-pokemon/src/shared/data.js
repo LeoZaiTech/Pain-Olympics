@@ -58,6 +58,74 @@ export const CARD_POOL = [
   { id: 'comfort-forensics',     title: 'Comfort TV Is Forensic Documentaries',            points: 4, tags: ['culture','health'] },
   { id: 'memes-regulation',      title: 'Memes as Emotional Regulation',                   points: 5, tags: ['internet','health'] },
   { id: 'health-advice-tumblr',  title: 'Got Health Advice from Tumblr, Never Recovered',  points: 6, tags: ['internet','health'] },
+  // shared with The Legend of Black Sparrow expansion
+  { id: 'gate-program-kid',                title: 'Gate Program Kid',                                  points: 5, tags: ['identity','culture'] },
+  { id: 'dare-betrayal',                   title: "Betrayed by DARE's Promises of Free Drugs as a Kid",points: 5, tags: ['culture','collapse'] },
+  { id: 'mcgruff-disappointed',            title: 'Disappointed McGruff the Crime Dog',                points: 5, tags: ['culture','collapse'] },
+  // shared with Black Sparrow + Jewels The Film Major expansions
+  { id: 'emotionally-unavailable-parents', title: 'Emotionally Unavailable Parents',                   points: 7, tags: ['family','health'] },
+  // shared with Jewels The Film Major expansion
+  { id: 'alcoholic-dad',                   title: 'Alcoholic Dad',                                     points: 7, tags: ['family','health'] },
+  { id: 'four-years-college-broke',        title: '4+ Years in College Still Broke',                   points: 5, tags: ['work','culture'] },
+  { id: 'eight-years-college-broke',       title: '8+ Years in College Still Broke',                   points: 6, tags: ['work','culture'] },
+  { id: 'neurodivergent-combo-pack',       title: 'Neurodivergent Mental Disorder Combo Pack',          points: 7, tags: ['health','identity'] },
+  { id: 'grippy-sock-vacation',            title: 'Grippy Sock Vacation',                              points: 7, tags: ['health'] },
+];
+
+export const EXPANSION_PACKS = [
+  {
+    id:       'black-sparrow',
+    name:     'The Legend of Black Sparrow',
+    tabLabel: 'LEGEND OF BLACK SPARROW',
+    subtitle: 'A personal card pack',
+    cards: [
+      { id: 'roofied-evened-out',              title: 'Got Roofied, Continued Drinking to Even It Out',          points: 7, tags: ['health','culture'] },
+      { id: 'foster-system',                   title: 'Lost in the Foster System',                               points: 8, tags: ['family','work'] },
+      { id: 'unaffectionate-adoption',         title: 'Adopted by Unaffectionate Parents',                       points: 7, tags: ['family'] },
+      { id: 'coast-to-coast-poor',             title: 'Moved from West Coast to East Coast, Still Poor',         points: 5, tags: ['work','culture'] },
+      { id: 'drug-addicted-mother',            title: 'Drug Addicted Mother',                                    points: 8, tags: ['family','health'] },
+      { id: 'father-most-wanted',              title: 'Father on Most Wanted List',                              points: 7, tags: ['family','collapse'] },
+      { id: 'unstable-partner-magnet',         title: 'Only Attracted to Unstable Partners',                     points: 6, tags: ['health','identity'] },
+      { id: 'love-bpd-women',                  title: 'I \u2764 Women with BPD',                                 points: 6, tags: ['health','identity'] },
+      { id: 'victimized-food-bev',             title: 'Victimized by Food and Bev',                              points: 6, tags: ['work','culture'] },
+      // dual-listed — also in CARD_POOL
+      { id: 'gate-program-kid',                title: 'Gate Program Kid',                                        points: 5, tags: ['identity','culture'] },
+      { id: 'dare-betrayal',                   title: "Betrayed by DARE's Promises of Free Drugs as a Kid",      points: 5, tags: ['culture','collapse'] },
+      { id: 'mcgruff-disappointed',            title: 'Disappointed McGruff the Crime Dog',                      points: 5, tags: ['culture','collapse'] },
+      { id: 'emotionally-unavailable-parents', title: 'Emotionally Unavailable Parents',                         points: 7, tags: ['family','health'] },
+    ],
+  },
+  {
+    id:       'jewels-film-major',
+    name:     'Jewels The Film Major',
+    tabLabel: 'JEWELS THE FILM MAJOR',
+    subtitle: 'A personal card pack',
+    cards: [
+      // exclusive to this pack
+      { id: 'movie-job-cult',                  title: 'Got a Job Working on a Movie, Ended Up in a Cult',        points: 8, tags: ['culture','collapse'] },
+      { id: 'nine-years-college-broke',        title: '9 Years in College Still Broke',                          points: 7, tags: ['work','culture'] },
+      { id: 'dad-recovers-alcoholism-cancer',  title: 'Dad Recovers from Alcoholism, Gets Cancer',               points: 9, tags: ['family','health'] },
+      { id: 'grew-up-fat-asian-2000s',         title: 'Grew Up Fat and Asian in the 2000s',                      points: 7, tags: ['identity','culture'] },
+      { id: 'grew-up-asian-2000s',             title: 'Grew Up Asian in the 2000s',                              points: 6, tags: ['identity','culture'] },
+      { id: 'grew-up-fat-2000s',               title: 'Grew Up Fat in the 2000s',                                points: 6, tags: ['identity','culture'] },
+      { id: 'grew-up-republican',              title: 'Grew Up Republican',                                      points: 5, tags: ['identity','culture'] },
+      { id: 'bipolar-autistic-ocd-bpd',        title: 'Bipolar, Autistic, OCD and Probably BPD',                 points: 8, tags: ['health','identity'] },
+      { id: 'eating-disorder-still-fat',       title: 'Had an Eating Disorder, Still Fat',                       points: 7, tags: ['health','identity'] },
+      { id: 'ambulance-public-panic',          title: 'Multiple Ambulance Calls for Public Panic Attacks',        points: 7, tags: ['health','identity'] },
+      { id: 'grippy-socks-lotr',               title: 'Lord of the Rings Trilogy: Grippy Socks Chronicles',      points: 8, tags: ['health','culture'] },
+      { id: 'mental-hospital-unaware',         title: 'Mental Hospital, Self-Harm, Nobody Was Aware',            points: 9, tags: ['health','family'] },
+      { id: 'grandma-die-pto',                 title: 'Watched Grandmother Die, Had to Take PTO for the Funeral',points: 8, tags: ['family','work'] },
+      { id: 'car-wreck-grandad',               title: 'Got in a Car Wreck, Grandad Died a Week Later',           points: 8, tags: ['family','collapse'] },
+      { id: 'both-godparents-cancer',          title: 'Both Godparents Have Cancer (Sadly Not Fairies)',          points: 8, tags: ['family','health'] },
+      // dual-listed — also in CARD_POOL
+      { id: 'emotionally-unavailable-parents', title: 'Emotionally Unavailable Parents',                         points: 7, tags: ['family','health'] },
+      { id: 'alcoholic-dad',                   title: 'Alcoholic Dad',                                           points: 7, tags: ['family','health'] },
+      { id: 'four-years-college-broke',        title: '4+ Years in College Still Broke',                         points: 5, tags: ['work','culture'] },
+      { id: 'eight-years-college-broke',       title: '8+ Years in College Still Broke',                         points: 6, tags: ['work','culture'] },
+      { id: 'neurodivergent-combo-pack',       title: 'Neurodivergent Mental Disorder Combo Pack',               points: 7, tags: ['health','identity'] },
+      { id: 'grippy-sock-vacation',            title: 'Grippy Sock Vacation',                                    points: 7, tags: ['health'] },
+    ],
+  },
 ];
 
 export const SETTINGS = {
