@@ -116,16 +116,3 @@ Core Set – 52 Cards
 4. Lived in a City That Locked Down Immediately During COVID
 5. COVID Stole My Graduation / Wedding / Funeral
 6. I Think the Simulation Is Glitching (Again)
-
-Deck total 32 Cards   1.Post 2024 Election Dread 
-
-2.Apocalyptic Dreams 
-3.Lived in a city that barely wore mask the entirety of covid 
-4.Lived in a city that lockdown day 1 from covid
-5. Remembers when Arnold Schwattezenaegar (I fucked that spelling up) wasn’t a politician 
-6. Victim of the Tan Suite Obama Presidency Scandal 
-7. Finding out all of your favorite celebrities are nazis
-8. Finding out all of your favorite celebrities are pedos or at least dating way tooo fucking young 
-9. Remembering a world where no one knew Brad Pitt was a wifebeater 
-10. Remembering when Bill Cosby was a comfortable father figure for America 
- Before JK Rowling couldn’t be pro trans or stop being a bigot to save her legacy her life or her pay check 

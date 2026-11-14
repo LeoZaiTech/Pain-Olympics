@@ -150,13 +150,8 @@ Pain Olympics/
 │   ├── NPC Profiles/
 │   │   └── Walmart Karen.md
 │   └── UI Inspirations and References/
-│       ├── Assets/
-│       │   └── Walmart Karen.png
-│       ├── Dungeons and Degenerates Card Style 1.png
-│       ├── Inscryption Card Style 1.png
-│       ├── Inscryption Card Style 2.png
-│       ├── Chefs Luv Shack Gameshow style background reference.jpg
-│       └── Pokemon Reference Battle Styling.png
+│       └── Assets/
+│           └── Walmart Karen.png   # placeholder NPC portrait
 ├── Brainstorming and Conceptualizing.md
 ├── Pain Olympics MVP Scope.md
 ├── Starting Deck.md

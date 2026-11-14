@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 .claude/
+
+# Local-only audio (never commit third-party music)
+prototypes/*/public/assets/music/
