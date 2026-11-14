@@ -2,12 +2,12 @@
 
 ---
 
-## Active Prototype: Version B — Pokemon Battle Edition
+## Active Prototype: Version B — Battle Edition
 
 **Started:** 2026-04-07
 **Stack:** Phaser 3 (v3.90) + Vite (v6.3), ES modules, Press Start 2P font
 **Server:** `http://127.0.0.1:3002` via Vite dev server
-**Location:** `/prototypes/version-b-pokemon/`
+**Location:** `/prototypes/version-b-battle/`
 
 ### What Is Working Right Now
 
@@ -141,7 +141,7 @@
 ### Status
 
 Stable but not actively developed. Kept as reference for game logic and card
-data. Version B Pokemon prototype is the active development track.
+data. Version B battle prototype is the active development track.
 
 ---
 

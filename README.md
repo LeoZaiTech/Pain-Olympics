@@ -83,7 +83,7 @@ The current prototype is a lightweight Node-powered web app with local JSON-back
 - [`data/npc-decks.json`](./data/npc-decks.json): runtime NPC deck definitions
 - [`data/npc-dialogue.json`](./data/npc-dialogue.json): runtime NPC taunts and reactions
 - [`Docs/NPC Profiles/`](./Docs/NPC%20Profiles/): NPC design specs
-- [`Docs/UI Inspirations and References/`](./Docs/UI%20Inspirations%20and%20References/): visual references plus local prototype art assets
+- [`Docs/UI Inspirations and References/`](./Docs/UI%20Inspirations%20and%20References/): local prototype art assets (the NPC portrait is a placeholder)
 - [`Docs/REACT_MIGRATION_PLAN.md`](./Docs/REACT_MIGRATION_PLAN.md): future React + Vite migration roadmap
 - [`Docs/AI_AGENT_SETUP.md`](./Docs/AI_AGENT_SETUP.md): AI workflow configuration and automation pipelines
 
